@@ -1,0 +1,18 @@
+﻿using MyReadsApp.Core.Entities.Identity;
+
+namespace MyReadsApp.Core.Entities
+{
+    public class Comment
+    {
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public Guid PostId { get; set; }
+
+        DateTime? CreatedAt { get; set; }
+        string content { get; set; }
+
+
+        public User User { get; set; }
+        public Post Post { get; set; }
+    }
+}
