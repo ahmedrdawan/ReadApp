@@ -35,48 +35,39 @@ Posts represent a link between **User → Book**.
 
 ---
 
-## 📁 Project Structure
+MyReadsApp.API:
+  Controllers:
+    - AuthController.cs
+    - AuthorController.cs
+    - BookController.cs
+    - PostController.cs
+  DTOs:
+    - Account DTOs
+    - Author DTOs
+    - Book DTOs
+    - Post DTOs
 
-MyReadsApp.API
-│── Controllers
-│ ├── AuthController.cs
-│ ├── AuthorController.cs
-│ ├── BookController.cs
-│ └── PostController.cs
-│
-│── DTOs
-│ ├── Account DTOs
-│ ├── Author DTOs
-│ ├── Book DTOs
-│ └── Post DTOs
-│
-MyReadsApp.Core
-│── Entities
-│── Services (Interfaces)
-│── DTOs (Requests / Responses)
-│── Exceptions
-│── Generic Repository
-│── Common
-│
-MyReadsApp.Infrastructure
-│── Data (AppDbContext)
-│── Services Implementations
-│── Repositories
+MyReadsApp.Core:
+  - Entities
+  - Services (Interfaces)
+  - DTOs (Requests / Responses)
+  - Exceptions
+  - Generic Repository
+  - Common
 
-yaml
-Copy code
-
----
-
-## 📑 API Documentation
-
-### 🔐 Authentication
-
-#### ➡️ POST `/api/Auth/Sign-Up`
+MyReadsApp.Infrastructure:
+  - Data (AppDbContext)
+  - Services Implementations
+  - Repositories
+📑 API Documentation
+🔐 Authentication
+➡️ POST /api/Auth/Sign-Up
 Registers a new user.
 
-**Body**
-```json
+Body
+
+json
+Copy code
 {
   "userName": "Ahmed",
   "email": "test@example.com",
