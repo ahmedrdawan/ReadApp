@@ -64,55 +64,64 @@ MyReadsApp.Infrastructure:
 ➡️ POST /api/Auth/Sign-Up
 Registers a new user.
 
+🔐 Authentication
+➡️ POST /api/Auth/Sign-Up
+
+Registers a new user.
+
 Body
 
-json
-Copy code
 {
   "userName": "Ahmed",
   "email": "test@example.com",
   "password": "P@ss1234"
 }
+
 ➡️ POST /api/Auth/Sign-In
+
 Logs in the user and returns a JWT token.
 
 Body
 
-json
-Copy code
 {
   "email": "test@example.com",
   "password": "P@ss1234"
 }
+
 👤 Authors
 ➡️ GET /api/Author/{AuthorId}
+
 Returns a single author.
 
 ➡️ POST /api/Author
+
 Creates a new author.
 
 Body
 
-json
-Copy code
 {
   "authorName": "John Doe",
   "authorImage": "image-url",
   "bio": "Writer biography"
 }
+
 ➡️ PUT /api/Author/{AuthorId}
+
 Updates an author's information.
 
 ➡️ DELETE /api/Author/{AuthorId}
+
 Deletes an author.
 
 📘 Books
 ➡️ GET /api/Book/{BookId}
+
 Returns full book details.
 
 ➡️ POST /api/Book
-json
-Copy code
+
+Body
+
 {
   "title": "Clean Code",
   "description": "Programming book",
@@ -120,26 +129,33 @@ Copy code
   "authorId": "guid_here",
   "bookImage": "image-url"
 }
+
 ➡️ PUT /api/Book/{BookId}
+
 Updates a book.
 
 ➡️ DELETE /api/Book/{BookId}
+
 Deletes a book.
 
 📝 Posts
+
 Posts represent a User → Book relation.
 
 ➡️ GET /api/Post/{PostId}
 ➡️ POST /api/Post
-json
-Copy code
+
+Body
+
 {
   "userId": "guid_here",
   "bookId": "guid_here"
 }
+
 ➡️ PUT /api/Post/{PostId}
 ➡️ DELETE /api/Post/{PostId}
 🛠️ Technologies Used
+
 ASP.NET Core Web API
 
 Entity Framework Core
@@ -153,29 +169,36 @@ Repository Pattern
 Clean Architecture
 
 ⚙️ Setup Instructions
+
 1️⃣ Clone the repository
-bash
-Copy code
+
 git clone https://github.com/ahmedrdawan/ReadsApp.git
+
+
 2️⃣ Update appsettings.json
-json
-Copy code
-"ConnectionStrings": {
-  "DefaultConnection": "Server=.;Database=MyReadsApp;Trusted_Connection=True;"
-},
-"Jwt": {
-  "Key": "YOUR_SECRET_KEY",
-  "Issuer": "BookLibraryApi",
-  "Audience": "BookLibraryApiUsers"
-},
-"appURL": "http://localhost:4200"
+
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=MyReadsApp;Trusted_Connection=True;"
+  },
+  "Jwt": {
+    "Key": "YOUR_SECRET_KEY",
+    "Issuer": "BookLibraryApi",
+    "Audience": "BookLibraryApiUsers"
+  },
+  "appURL": "http://localhost:4200"
+}
+
+
 3️⃣ Apply migrations
-bash
-Copy code
+
 dotnet ef database update
+
+
 4️⃣ Run the API
-bash
-Copy code
+
 dotnet run
+
 ⭐ Contribution
+
 Pull requests are welcome!
