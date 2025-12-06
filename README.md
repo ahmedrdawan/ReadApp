@@ -1,62 +1,54 @@
-# MyReadsApp API
+# 📚 MyReadsApp API
 
-A complete ASP.NET Core Web API that manages Users, Authentication, Books, Authors, and Posts.
-The system supports JWT authentication, and CRUD operations for all main entities.
+A complete **ASP.NET Core Web API** that manages **Users, Authentication, Books, Authors, and Posts**.  
+The system uses **JWT authentication**, **Entity Framework Core**, and provides full **CRUD operations** for all main entities.
 
-🚀 Features
-🔐 Authentication
+---
 
-Sign Up
+## 🚀 Features
 
-Sign In
+### 🔐 Authentication
+- Sign Up  
+- Sign In  
+- JWT Token Generation  
 
-JWT Token Generation
+### 👤 Authors
+- Create Author  
+- Get Author  
+- Update Author  
+- Delete Author  
 
-👤 Authors
+### 📘 Books
+- Create Book  
+- Get Book  
+- Update Book  
+- Delete Book  
 
-Create Author
+### 📝 Posts
+Posts represent a link between **User → Book**.
 
-Get Author
+- Create Post  
+- Get Post  
+- Update Post  
+- Delete Post  
+- Validates UserId and BookId  
 
-Update Author
+---
 
-Delete Author
+## 📁 Project Structure
 
-📘 Books
-
-Create Book
-
-Get Book
-
-Update Book
-
-Delete Book
-
-📝 Posts
-
-Create Post (User → Book)
-
-Get Post
-
-Update Post
-
-Delete Post
-
-Validation for UserId & BookId
-
-📁 Project Structure
 MyReadsApp.API
 │── Controllers
-│   ├── AuthController.cs
-│   ├── AuthorController.cs
-│   ├── BookController.cs
-│   └── PostController.cs
+│ ├── AuthController.cs
+│ ├── AuthorController.cs
+│ ├── BookController.cs
+│ └── PostController.cs
 │
 │── DTOs
-│   ├── Account DTOs
-│   ├── Author DTOs
-│   ├── Book DTOs
-│   └── Post DTOs
+│ ├── Account DTOs
+│ ├── Author DTOs
+│ ├── Book DTOs
+│ └── Post DTOs
 │
 MyReadsApp.Core
 │── Entities
@@ -71,60 +63,65 @@ MyReadsApp.Infrastructure
 │── Services Implementations
 │── Repositories
 
-📑 API Documentation
-🔐 Authentication
-➡️ POST /api/Auth/Sign-Up
+yaml
+Copy code
 
+---
+
+## 📑 API Documentation
+
+### 🔐 Authentication
+
+#### ➡️ POST `/api/Auth/Sign-Up`
 Registers a new user.
 
-Body
-
+**Body**
+```json
 {
   "userName": "Ahmed",
   "email": "test@example.com",
   "password": "P@ss1234"
 }
-
 ➡️ POST /api/Auth/Sign-In
-
-Logs in a user and returns JWT.
+Logs in the user and returns a JWT token.
 
 Body
 
+json
+Copy code
 {
   "email": "test@example.com",
   "password": "P@ss1234"
 }
-
 👤 Authors
 ➡️ GET /api/Author/{AuthorId}
-
 Returns a single author.
 
 ➡️ POST /api/Author
+Creates a new author.
 
-Create a new author.
+Body
 
+json
+Copy code
 {
   "authorName": "John Doe",
   "authorImage": "image-url",
   "bio": "Writer biography"
 }
-
 ➡️ PUT /api/Author/{AuthorId}
-
-Updates author information.
+Updates an author's information.
 
 ➡️ DELETE /api/Author/{AuthorId}
-
 Deletes an author.
 
 📘 Books
 ➡️ GET /api/Book/{BookId}
-
-Returns full book data.
+Returns full book details.
 
 ➡️ POST /api/Book
+json
+Copy code
 {
   "title": "Clean Code",
   "description": "Programming book",
@@ -132,30 +129,26 @@ Returns full book data.
   "authorId": "guid_here",
   "bookImage": "image-url"
 }
-
 ➡️ PUT /api/Book/{BookId}
-
 Updates a book.
 
 ➡️ DELETE /api/Book/{BookId}
-
 Deletes a book.
 
 📝 Posts
-
-Posts represent a link between User → Book.
+Posts represent a User → Book relation.
 
 ➡️ GET /api/Post/{PostId}
 ➡️ POST /api/Post
+json
+Copy code
 {
   "userId": "guid_here",
   "bookId": "guid_here"
 }
-
 ➡️ PUT /api/Post/{PostId}
 ➡️ DELETE /api/Post/{PostId}
 🛠️ Technologies Used
-
 ASP.NET Core Web API
 
 Entity Framework Core
@@ -166,17 +159,16 @@ JWT Authentication
 
 Repository Pattern
 
-Clean Architecture (modular)
+Clean Architecture
 
 ⚙️ Setup Instructions
-
-1️⃣ Clone repository
-
-git clone https://github.com/ahmedrdawan/MyReadsApp.git
-
-
+1️⃣ Clone the repository
+bash
+Copy code
+git clone https://github.com/ahmedrdawan/ReadsApp.git
 2️⃣ Update appsettings.json
-
+json
+Copy code
 "ConnectionStrings": {
   "DefaultConnection": "Server=.;Database=MyReadsApp;Trusted_Connection=True;"
 },
@@ -186,13 +178,13 @@ git clone https://github.com/ahmedrdawan/MyReadsApp.git
   "Audience": "BookLibraryApiUsers"
 },
 "appURL": "http://localhost:4200"
-
-
-3️⃣ Run migrations
-
+3️⃣ Apply migrations
+bash
+Copy code
 dotnet ef database update
-
-
 4️⃣ Run the API
-
+bash
+Copy code
 dotnet run
+⭐ Contribution
+Pull requests are welcome!
