@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1NlOPHwdL8c=",
+  "dgSpecHash": "v8MNDe8fVb4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\VGA\\Desktop\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj",
+  "projectFilePath": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\VGA\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\VGA\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

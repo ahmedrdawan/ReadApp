@@ -1059,11 +1059,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\VGA\\Desktop\\Backend\\MyReadsApp\\MyReadsApp.Core\\MyReadsApp.Core.csproj",
+      "projectUniqueName": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\MyReadsApp.Core.csproj",
       "projectName": "MyReadsApp.Core",
-      "projectPath": "C:\\Users\\VGA\\Desktop\\Backend\\MyReadsApp\\MyReadsApp.Core\\MyReadsApp.Core.csproj",
+      "projectPath": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\MyReadsApp.Core.csproj",
       "packagesPath": "C:\\Users\\VGA\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\VGA\\Desktop\\Backend\\MyReadsApp\\MyReadsApp.Core\\obj\\",
+      "outputPath": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
