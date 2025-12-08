@@ -10,7 +10,7 @@ namespace MyReadsApp.Core.Generic.Interfaces
     {
         //Task<T?> GetAsync(Guid id);
         Task<int> CreateAsync(T entity);
-        Task<int> UpdateAsync(Guid UserId, T NewEntity);
-        Task<int> DeleteAsync(Guid UserId);
+        Task<int> UpdateAsync(Guid Id, T NewEntity);
+        Task<int> DeleteAsync(Guid Id);
     }
 }

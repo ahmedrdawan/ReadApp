@@ -22,7 +22,7 @@ namespace MyReadsApp.Infstructure.Services
         {
             var author = await _context.Authors.FindAsync(entity.AuthorId);
             if (author == null)
-                throw new NoFoundException("The Author Not Found");
+                throw new NotFoundException("The Author Not Found");
 
             var exists = await _context.Books
                 .AnyAsync(x => x.Title == entity.Title && x.AuthorId == entity.AuthorId);

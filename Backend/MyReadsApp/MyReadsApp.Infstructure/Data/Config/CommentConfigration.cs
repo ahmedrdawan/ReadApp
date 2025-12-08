@@ -8,7 +8,6 @@ namespace MyReadsApp.Infstructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-            builder.HasKey(l => new { l.UserId, l.PostId });
 
             builder.HasOne(c => c.User)
                 .WithMany(u => u.Comments)

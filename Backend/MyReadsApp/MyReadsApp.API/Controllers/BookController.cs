@@ -3,9 +3,11 @@ using MyReadsApp.API.DTOs.Book.Response;
 using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyReadsApp.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class BookController : ControllerBase

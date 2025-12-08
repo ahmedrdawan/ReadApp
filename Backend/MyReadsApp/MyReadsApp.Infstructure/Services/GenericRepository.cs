@@ -20,20 +20,13 @@ namespace MyReadsApp.Infstructure.Services
 
         public async Task<int> CreateAsync(T entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity), $"The {typeof(T).Name} is null");
-
             await _content.Set<T>().AddAsync(entity);
             return await _content.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid Id)
         {
-            var entity = await _content.Set<T>().FindAsync(id);
-
-            if (entity == null)
-                throw new KeyNotFoundException($"Entity of type '{typeof(T).Name}' with Id '{id}' not found.");
-
+            var entity = await _content.Set<T>().FindAsync(Id);
             _content.Set<T>().Remove(entity);
 
             return await _content.SaveChangesAsync();
@@ -43,15 +36,9 @@ namespace MyReadsApp.Infstructure.Services
         //    return await _content.Set<T>().FindAsync(id);
         //}
 
-        public async Task<int> UpdateAsync(Guid UserId, T NewEntity)
+        public async Task<int> UpdateAsync(Guid Id, T NewEntity)
         {
-            var entity = await _content.Set<T>().FindAsync(UserId);
-
-            if (entity == null)
-                throw new KeyNotFoundException($"Entity of type '{typeof(T).Name}' with Id '{UserId}' not found.");
-
-            entity = NewEntity;
-            _content.Set<T>().Update(entity);
+            _content.Set<T>().Update(NewEntity);
             return await _content.SaveChangesAsync();
         }
     }

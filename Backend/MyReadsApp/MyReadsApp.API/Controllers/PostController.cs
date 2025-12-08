@@ -5,18 +5,23 @@ using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyReadsApp.Core.Services.Interfaces.Account;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyReadsApp.API.Controllers
 {
+    [Authorize(Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class PostController : ControllerBase
     {
         private readonly IPostServices _PostServices;
+        private readonly IUserAuthServices _userAuthServices;
 
-        public PostController(IPostServices PostServices)
+        public PostController(IPostServices PostServices, IUserAuthServices userAuthServices)
         {
             _PostServices = PostServices;
+            _userAuthServices = userAuthServices;
         }
 
         [HttpGet("{PostId}")]
@@ -33,7 +38,7 @@ namespace MyReadsApp.API.Controllers
             {
                 Id = Guid.NewGuid(),
                 BookId = request.BookId,
-                UserId = request.UserId,
+                UserId = _userAuthServices.GetCurrentUser(),
                 CreatedAt = DateTime.UtcNow,
             };
 

@@ -24,6 +24,7 @@ namespace MyReadsApp.Infstructure.Services
         private readonly IJwtTokenServices _IJwtTokenServices;
         private readonly IEmailservices _emailservices;
         private readonly IConfiguration _configration;
+        
 
         public AuthServices(UserManager<User> userManager, SignInManager<User> signInManager, IJwtTokenServices iJwTokenServices, IEmailservices emailservices, IConfiguration configration)
         {

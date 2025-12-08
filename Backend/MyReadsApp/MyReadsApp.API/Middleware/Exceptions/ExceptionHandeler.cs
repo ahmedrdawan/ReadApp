@@ -13,7 +13,7 @@ namespace MyReadsApp.API.Middleware.Exceptions
             {
                 await next(context);
             }
-            catch (NoFoundException ex)
+            catch (NotFoundException ex)
             {
                 await HandleException(context, ex, HttpStatusCode.NotFound);
             }

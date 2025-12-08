@@ -2,7 +2,6 @@
 {
     public class CreatedPostRequest: BasePostRequest
     {
-        public Guid UserId { get; set; }
     }
 
 }

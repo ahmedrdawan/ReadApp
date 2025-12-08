@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Identity;
+using MyReadsApp.API.Middleware.Exceptions;
 using MyReadsApp.Core.Entities.Identity;
 using MyReadsApp.Infstructure;
 using MyReadsApp.Infstructure.Seeder;
-using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 namespace MyReadsApp.API
 {
     public class Program
@@ -18,6 +18,7 @@ namespace MyReadsApp.API
 
             // reigister Services
             builder.Services.AddIfstracture(builder.Configuration);
+            builder.Services.AddTransient<ExceptionHandeler>();
 
             var app = builder.Build();
 
@@ -38,6 +39,7 @@ namespace MyReadsApp.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseMiddleware<ExceptionHandeler>();
             app.UseStaticFiles();
             app.UseAuthorization();
             app.MapControllers();

@@ -12,18 +12,21 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using MyReadsApp.Core.Services.Interfaces.Account;
 
 namespace MyReadsApp.Infstructure.Services
 {
     public class PostServices : IPostServices
     {
         private readonly IGenericRepository<Post> _genericRepository;
+        private readonly IUserAuthServices _userAuthServices;
         private readonly AppDbContext _context;
 
-        public PostServices(IGenericRepository<Post> genericRepository, AppDbContext context)
+        public PostServices(IGenericRepository<Post> genericRepository, AppDbContext context, IUserAuthServices userAuthServices)
         {
             _genericRepository = genericRepository;
             _context = context;
+            _userAuthServices = userAuthServices;
         }
 
         public async Task<int> CreateAsync(Post entity)
@@ -42,6 +45,9 @@ namespace MyReadsApp.Infstructure.Services
             var post = await _context.Posts.FindAsync(PostId);
             if (post is null)
                 throw new KeyNotFoundException("The Post Not Found");
+
+            if (post.UserId != _userAuthServices.GetCurrentUser())
+                throw new NotAuthorizeException("The User Not Authorize");
 
             return await _genericRepository.DeleteAsync(PostId);
         }
@@ -63,6 +69,10 @@ namespace MyReadsApp.Infstructure.Services
             var book = await _context.Books.FindAsync(NewEntity.BookId);
             if (post is null || book is null)
                 throw new KeyNotFoundException($"Post Or User Or User not found.");
+
+            if (post.UserId != _userAuthServices.GetCurrentUser())
+                throw new NotAuthorizeException("The User Not Authorize");
+
 
             post.BookId = NewEntity.BookId;
             post.UpdatedAt = NewEntity.UpdatedAt;

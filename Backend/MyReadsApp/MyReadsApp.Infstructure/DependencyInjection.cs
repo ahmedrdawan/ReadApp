@@ -1,18 +1,20 @@
-﻿using MyReadsApp.Core.AppSetting;
-using MyReadsApp.Core.Entities.Identity;
-using MyReadsApp.Infstructure.Data;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using MyReadsApp.Infstructure.Services;
-using MyReadsApp.Core.Services.Interfaces.Account;
+using MyReadsApp.Core.AppSetting;
+using MyReadsApp.Core.Entities.Identity;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
+using MyReadsApp.Core.Services.Interfaces.Account;
+using MyReadsApp.Infstructure.Data;
+using MyReadsApp.Infstructure.Services;
+using MyReadsApp.Infstructure.Services.Account;
+using System.Text;
 
 namespace MyReadsApp.Infstructure
 {
@@ -113,11 +115,17 @@ namespace MyReadsApp.Infstructure
         private static IServiceCollection AddScopedServices(
            this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IAuthorServices, AuthorServices>();
+            services.AddScoped<IUserAuthServices, UserAuthServices>();
             services.AddScoped<IBookServices, BookServices>();
             services.AddScoped<IPostServices, PostServices>();
             services.AddScoped<IAuthServices, AuthServices>();
+            services.AddScoped<ICommentServises, CommentServices>();
+            services.AddScoped<IFaviroteBookServices, FaviroteBookServices>();
+
+
             services.AddScoped<IJwtTokenServices, JwtTokenServices>();
             services.AddScoped<IEmailservices, EmailServices>();
             //services.AddSingleton<IEmailservices, EmailServices>();

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SendGrid.Helpers.Mail;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -32,7 +33,13 @@ namespace MyReadsApp.Infstructure.Services
 
             return await _genericRepository.CreateAsync(entity);
         }
-        public async Task<int> DeleteAsync(Guid UserId) => await _genericRepository.DeleteAsync(UserId);
+        public async Task<int> DeleteAsync(Guid AuthorId)
+        {
+            var author = await _context.Authors.FindAsync(AuthorId);
+            if (author == null)
+                throw new NotFoundException("The Author Not Found");
+            return await _genericRepository.DeleteAsync(AuthorId);
+        }
         public async Task<AuthorResponse?> GetAsync(Guid AuthorId) 
         {
             return await _context.Authors.Select(a => new AuthorResponse
@@ -44,6 +51,16 @@ namespace MyReadsApp.Infstructure.Services
             }).FirstOrDefaultAsync(a => a.Id == AuthorId);
         }
 
-        public async Task<int> UpdateAsync(Guid UserId, Author NewEntity) => await _genericRepository.UpdateAsync(UserId, NewEntity);
+        public async Task<int> UpdateAsync(Guid AuthorId, Author NewEntity)
+        {
+            var author = await _context.Authors.FindAsync(AuthorId);
+            if (author == null)
+                throw new NotFoundException("The Author Not Found");
+
+            author.Bio = NewEntity.Bio;
+            author.AuthorName = NewEntity.AuthorName;
+            author.AuthorImage = NewEntity.AuthorImage;
+            return await _genericRepository.UpdateAsync(AuthorId, author);
+        }
     }
 }

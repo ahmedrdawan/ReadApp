@@ -22,3 +22,16 @@ C:\Users\VGA\Desktop\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReads
 C:\Users\VGA\Desktop\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\refint\MyReadsApp.Core.dll
 C:\Users\VGA\Desktop\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.pdb
 C:\Users\VGA\Desktop\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\ref\MyReadsApp.Core.dll
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\bin\Debug\net8.0\MyReadsApp.Core.deps.json
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\bin\Debug\net8.0\MyReadsApp.Core.dll
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\bin\Debug\net8.0\MyReadsApp.Core.pdb
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.csproj.AssemblyReference.cache
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.AssemblyInfoInputs.cache
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.AssemblyInfo.cs
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.csproj.CoreCompileInputs.cache
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.sourcelink.json
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.dll
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\refint\MyReadsApp.Core.dll
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\MyReadsApp.Core.pdb
+C:\Users\VGA\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.Core\obj\Debug\net8.0\ref\MyReadsApp.Core.dll
