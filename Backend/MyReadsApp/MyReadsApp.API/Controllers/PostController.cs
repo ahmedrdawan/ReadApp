@@ -28,7 +28,9 @@ namespace MyReadsApp.API.Controllers
         public async Task<IActionResult> GetPost(Guid PostId)
         {
             var result = await _PostServices.GetAsync(PostId);
-            return result is null ? NotFound() : Ok(result);
+            if (!result.IsSuccess)
+                return NotFound(result);
+            return Ok(result.Value);
         }
 
         [HttpPost]
@@ -43,18 +45,13 @@ namespace MyReadsApp.API.Controllers
             };
 
             var result = await _PostServices.CreateAsync(Post);
-            return result <= 0
-                ? BadRequest(request)
-                : CreatedAtAction(
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return 
+                CreatedAtAction(
                     actionName: "GetPost",
                     routeValues: new { PostId = Post.Id },
-                    value: new PostResponse
-                    {
-                        Id = Post.Id,
-                        CreatedAt = Post.CreatedAt,
-                        UserId = Post.UserId,
-                        BookId = request.BookId,
-                    });
+                    value: result.Value);
         }
 
         [HttpPut("{PostId}")]
@@ -67,14 +64,18 @@ namespace MyReadsApp.API.Controllers
             };
 
             var result = await _PostServices.UpdateAsync(PostId, NewPost);
-            return result <= 0 ? BadRequest(PostId) : NoContent();
+            if (!result.IsSuccess)
+                return NotFound(result);
+            return NoContent();
         }
 
         [HttpDelete("{PostId}")]
         public async Task<IActionResult> DeletePost(Guid PostId)
         {
             var result = await _PostServices.DeleteAsync(PostId);
-            return result <= 0 ? BadRequest(PostId) : NoContent();
+            if (!result.IsSuccess)
+                return NotFound(result);
+            return NoContent();
         }
     }
 }

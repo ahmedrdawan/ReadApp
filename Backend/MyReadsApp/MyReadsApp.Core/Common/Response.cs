@@ -29,7 +29,7 @@ namespace MyReadsApp.Core.Common
             Errors = errors;
             Error = Errors?.FirstOrDefault() ?? string.Empty;
         }
-        public static Response Sucess(int statusCode = 200) => new(true, default ,statusCode);
+        public static Response Success(int statusCode = 200) => new(true, default ,statusCode);
         public static Response Failure(List<string> errors, int statusCode = 400) => new(false, default, errors ,statusCode);
         public static Response Failure(string error, int statusCode = 400) => new(false, error ,statusCode);
     }
@@ -49,7 +49,7 @@ namespace MyReadsApp.Core.Common
         {
             Value = value;
         }
-        public static Response<T> Sucess(T? value, int statusCode = 200) => new(true, value, string.Empty, statusCode);
+        public static Response<T> Success(T? value, int statusCode = 200) => new(true, value, string.Empty, statusCode);
         public static Response<T> Failure(List<string> errors, int statusCode = 400) => new(false, default, string.Empty,errors,statusCode);
         public static Response<T> Failure(string error, int statusCode = 400) => new(false, default,error, statusCode);
 

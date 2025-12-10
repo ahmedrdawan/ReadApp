@@ -13,6 +13,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using MyReadsApp.Core.Services.Interfaces.Account;
+using MyReadsApp.Core.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -29,55 +31,71 @@ namespace MyReadsApp.Infstructure.Services
             _userAuthServices = userAuthServices;
         }
 
-        public async Task<int> CreateAsync(Post entity)
+        public async Task<Response<PostResponse>> CreateAsync(Post entity)
         {
             var book = await _context.Books.FindAsync(entity.BookId);
             var user = await _context.Users.FindAsync(entity.UserId);
 
             if (book is null || user is null)
-                throw new KeyNotFoundException("The Book Or User Not Found");
+                return Response<PostResponse>.Failure("The Book Or User Not Found", 404);
 
-            return await _genericRepository.CreateAsync(entity);
+            await _genericRepository.CreateAsync(entity);
+            PostResponse response = BuildResponse(entity);
+            return Response<PostResponse>.Success(response);
         }
 
-        public async Task<int> DeleteAsync(Guid PostId)
+        public async Task<Response<PostResponse>> DeleteAsync(Guid PostId)
         {
             var post = await _context.Posts.FindAsync(PostId);
             if (post is null)
-                throw new KeyNotFoundException("The Post Not Found");
+                return Response<PostResponse>.Failure("The Post Not Found",404);
 
             if (post.UserId != _userAuthServices.GetCurrentUser())
-                throw new NotAuthorizeException("The User Not Authorize");
+                return Response<PostResponse>.Failure("The User Not Authorize", 403);
 
-            return await _genericRepository.DeleteAsync(PostId);
+            await _genericRepository.DeleteAsync(PostId);
+            PostResponse response = BuildResponse(post);
+            return Response<PostResponse>.Success(response);
         }
 
-        public async Task<PostResponse?> GetAsync(Guid PostId)
+        public async Task<Response<PostResponse>> GetAsync(Guid PostId)
         {
-            return await _context.Posts.Select(p => new PostResponse
-            {
-                Id = p.Id,
-                UserId = p.UserId,
-                BookId = p.BookId,
-                CreatedAt = p.CreatedAt,
-            }).FirstOrDefaultAsync(p => p.Id == PostId);
+            var post = await _context.Posts.FindAsync(PostId);
+            if (post == null)
+                return Response<PostResponse>.Failure("The Post Not Found", 404);
+            PostResponse response = BuildResponse(post);
+            return Response<PostResponse>.Success(response);
         }
 
-        public async Task<int> UpdateAsync(Guid PostId, Post NewEntity)
+        public async Task<Response<PostResponse>> UpdateAsync(Guid PostId, Post NewEntity)
         {
             var post = await _context.Posts.FindAsync(PostId);
             var book = await _context.Books.FindAsync(NewEntity.BookId);
             if (post is null || book is null)
-                throw new KeyNotFoundException($"Post Or User Or User not found.");
+                return Response<PostResponse>.Failure($"Post or Book not found.", 404);
 
             if (post.UserId != _userAuthServices.GetCurrentUser())
-                throw new NotAuthorizeException("The User Not Authorize");
+                return Response<PostResponse>.Failure("The User Not Authorize", 403);
 
 
             post.BookId = NewEntity.BookId;
+            post.UserId = NewEntity.UserId;
             post.UpdatedAt = NewEntity.UpdatedAt;
 
-            return await _genericRepository.UpdateAsync(PostId, post);
+            await _genericRepository.UpdateAsync(PostId, post);
+            PostResponse response = BuildResponse(post);
+            return Response<PostResponse>.Success(response);
+        }
+
+        private static PostResponse BuildResponse(Post entity)
+        {
+            return new PostResponse
+            {
+                Id = entity.Id,
+                BookId = entity.BookId,
+                UserId = entity.UserId,
+                CreatedAt = entity.CreatedAt,
+            };
         }
     }
 }

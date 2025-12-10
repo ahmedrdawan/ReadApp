@@ -29,59 +29,58 @@ namespace MyReadsApp.API.Controllers
         public async Task<IActionResult> GetComment(Guid CommentId)
         {
             var result = await _commentServises.GetAsync(CommentId);
-            return result is null ? NotFound() : Ok(result);
+            if(!result.IsSuccess)
+                return NotFound(result);
+            return Ok(result.Value);
         }
 
-        [HttpPost("{PostId}/Comment")]
+        [HttpPost("Post/{PostId}/Comment")]
         public async Task<IActionResult> CreateComment(Guid PostId, [FromBody] CreatedCommentRequest request)
         {
             var Comment = new Comment
             {
                 Id = Guid.NewGuid(),
                 content = request.content,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 UserId = _userAuthServices.GetCurrentUser(),
                 PostId = PostId
             };
 
 
             var result = await _commentServises.CreateAsync(Comment);
-            return result <= 0
-                ? BadRequest(request)
-                : CreatedAtAction(
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return CreatedAtAction(
                     actionName: "GetComment",
                     routeValues: new { CommentId = Comment.Id },
-                    value: new CommentResponse
-                    {
-                        Id = Comment.Id,
-                        content = Comment.content,
-                        CreatedAt = Comment.CreatedAt,
-                        PostId = Comment.PostId,
-                        UserId = Comment.UserId,
-                    });
+                    value: result.Value);
         }
 
-        [HttpPut("{PostId}/Comment/{CommentId}")]
+        [HttpPut("Post/{PostId}/Comment/{CommentId}")]
         public async Task<IActionResult> UpdateComment(Guid PostId, Guid CommentId, UpdateCommentRequest request)
         {
             var NewComment = new Comment
             {
                 Id = CommentId,
                 UserId = _userAuthServices.GetCurrentUser(),
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 PostId = PostId,
                 content = request.content,
             };
 
             var result = await _commentServises.UpdateAsync(CommentId, NewComment);
-            return result <= 0 ? BadRequest(CommentId) : NoContent();
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return  NoContent();
         }
 
         [HttpDelete("Post/Comment/{CommentId}")]
         public async Task<IActionResult> DeleteComment(Guid CommentId)
         {
             var result = await _commentServises.DeleteAsync(CommentId);
-            return result <= 0 ? BadRequest(CommentId) : NoContent();
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return NoContent();
         }
     }
 }

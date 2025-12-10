@@ -1,13 +1,14 @@
-﻿using MyReadsApp.Core.DTOs.FaviorateBook;
+﻿using MyReadsApp.Core.Common;
+using MyReadsApp.Core.DTOs.FaviorateBook;
 using MyReadsApp.Core.Entities;
 
 namespace MyReadsApp.Core.Services.Interfaces
 {
     public interface IFaviroteBookServices 
     {
-        Task<int> CreateAsync(FaviorateBook entity);
-        Task<int> DeleteAsync(Guid BookId);
+        Task<Response<FaviorateBookResponse>> CreateAsync(FaviorateBook entity);
+        Task<Response<FaviorateBookResponse>> DeleteAsync(Guid BookId);
 
-        Task<FaviorateBookResponse?> GetFavBookAsync(Guid BookId);
+        Task<Response<FaviorateBookResponse>> GetFavBookAsync(Guid BookId);
     }
 }

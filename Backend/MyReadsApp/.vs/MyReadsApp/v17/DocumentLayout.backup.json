@@ -3,31 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Migrations\\20251208143344_addMoreColumn.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:MyReadsApp.Infstructure\\Migrations\\20251208143344_addMoreColumn.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|c:\\users\\vga\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.api\\controllers\\favioratebookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|solutionrelative:myreadsapp.api\\controllers\\favioratebookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|c:\\users\\vga\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.api\\controllers\\authorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|solutionrelative:myreadsapp.api\\controllers\\authorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|c:\\users\\vga\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.api\\controllers\\bookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|solutionrelative:myreadsapp.api\\controllers\\bookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|c:\\users\\vga\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.api\\controllers\\commentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|solutionrelative:myreadsapp.api\\controllers\\commentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|c:\\users\\vga\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.api\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|solutionrelative:myreadsapp.api\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/./LibraryBook/True/SqlTable/dbo.Books.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|c:\\users\\vga\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.infstructure\\services\\bookservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|solutionrelative:myreadsapp.infstructure\\services\\bookservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,89 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "20251208143344_addMoreColumn.cs",
-              "DocumentMoniker": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Migrations\\20251208143344_addMoreColumn.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\Migrations\\20251208143344_addMoreColumn.cs",
-              "ToolTip": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Migrations\\20251208143344_addMoreColumn.cs",
-              "RelativeToolTip": "MyReadsApp.Infstructure\\Migrations\\20251208143344_addMoreColumn.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAgwA0AAAApAAAAAAAAAA==",
+              "Title": "BookServices.cs",
+              "DocumentMoniker": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\BookServices.cs",
+              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\Services\\BookServices.cs",
+              "ToolTip": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\BookServices.cs",
+              "RelativeToolTip": "MyReadsApp.Infstructure\\Services\\BookServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-08T14:33:45.051Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AuthorController.cs",
-              "DocumentMoniker": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\AuthorController.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.API\\Controllers\\AuthorController.cs",
-              "ToolTip": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\AuthorController.cs",
-              "RelativeToolTip": "MyReadsApp.API\\Controllers\\AuthorController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-08T14:28:15.821Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "BookController.cs",
-              "DocumentMoniker": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\BookController.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.API\\Controllers\\BookController.cs",
-              "ToolTip": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\BookController.cs",
-              "RelativeToolTip": "MyReadsApp.API\\Controllers\\BookController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-08T14:28:08.235Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "PostController.cs",
-              "DocumentMoniker": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\PostController.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.API\\Controllers\\PostController.cs",
-              "ToolTip": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\PostController.cs",
-              "RelativeToolTip": "MyReadsApp.API\\Controllers\\PostController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-08T14:27:57.465Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CommentController.cs",
-              "DocumentMoniker": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\CommentController.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.API\\Controllers\\CommentController.cs",
-              "ToolTip": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\CommentController.cs",
-              "RelativeToolTip": "MyReadsApp.API\\Controllers\\CommentController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-08T14:24:25.889Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FaviorateBookController.cs",
-              "DocumentMoniker": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\FaviorateBookController.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.API\\Controllers\\FaviorateBookController.cs",
-              "ToolTip": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\FaviorateBookController.cs",
-              "RelativeToolTip": "MyReadsApp.API\\Controllers\\FaviorateBookController.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAowCMAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-08T14:24:12.675Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "dbo.Books [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/./LibraryBook/True/SqlTable/dbo.Books.sql",
-              "ToolTip": "dbo.Books [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-08T14:22:25.093Z",
+              "WhenOpened": "2025-12-09T23:23:32.732Z",
               "EditorCaption": ""
             }
           ]

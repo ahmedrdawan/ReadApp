@@ -24,7 +24,9 @@ namespace MyReadsApp.API.Controllers
         public async Task<IActionResult> GetBook(Guid BookId)
         {
             var result = await _bookServices.GetAsync(BookId);
-            return result is null ? NotFound() : Ok(result);
+            if (!result.IsSuccess)
+                return NotFound(result);
+            return Ok(result.Value);
         }
 
         [HttpPost]
@@ -41,19 +43,13 @@ namespace MyReadsApp.API.Controllers
             };
 
             var result = await _bookServices.CreateAsync(book);
-            return result <= 0
-                ? BadRequest(request)
-                : CreatedAtAction(
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return
+                CreatedAtAction(
                     actionName: "GetBook",
                     routeValues: new { BookId = book.Id },
-                    value: new BookAuthorResponse
-                    {
-                        Id = book.Id,
-                        Title = book.Title,
-                        Description = book.Description,
-                        BookImage = book.BookImage,
-                        AuthorId = book.AuthorId,
-                    });
+                    value: result.Value);
         }
 
         [HttpPut("{BookId}")]
@@ -68,14 +64,19 @@ namespace MyReadsApp.API.Controllers
             };
 
             var result = await _bookServices.UpdateAsync(BookId, NewBook);
-            return result <= 0 ? BadRequest(BookId) : NoContent();
+            if (!result.IsSuccess)
+                return BadRequest(result);
+
+            return NoContent();
         }
 
         [HttpDelete("{BookId}")]
         public async Task<IActionResult> DeleteBook(Guid BookId)
         {
             var result = await _bookServices.DeleteAsync(BookId);
-            return result <= 0 ? BadRequest(BookId) : NoContent();
+            if (!result.IsSuccess) 
+                return BadRequest(result);
+            return NoContent();
         }
     }
 }

@@ -34,30 +34,31 @@ namespace MyReadsApp.API.Controllers
             };
 
             var result = await _faviroteBookServices.CreateAsync(fb);
-            return result <= 0 ? BadRequest() : 
+            if(!result.IsSuccess)
+                return BadRequest(result);
+            return 
                 CreatedAtAction(
                     actionName: "GetFaviorateBook",
                     routeValues : new { BookId = fb.BookId  },
-                    value: new FaviorateBookResponse
-                    {
-                        BookId = fb.BookId,
-                        UserId = fb.UserId,
-                        CreatedAt = fb.CreatedAt
-                    });
+                    value: result.Value);
         }
 
         [HttpDelete("{BookId}")]
         public async Task<IActionResult> DeleteFaviorateBook(Guid BookId)
         {
             var result = await _faviroteBookServices.DeleteAsync(BookId);
-            return result <= 0 ? BadRequest(BookId) : NoContent();
+            if(!result.IsSuccess)
+                return NotFound(result);
+            return NoContent();
         }
 
         [HttpGet("{BookId}")]
         public async Task<IActionResult> GetFaviorateBook(Guid BookId)
         {
             var result = await _faviroteBookServices.GetFavBookAsync(BookId);
-            return result == null ? NotFound($"Favorite book not found for BookId: {BookId}") : Ok(result);
+            if(!result.IsSuccess)
+                return NotFound(result);
+            return Ok(result);
         }
     }
 }

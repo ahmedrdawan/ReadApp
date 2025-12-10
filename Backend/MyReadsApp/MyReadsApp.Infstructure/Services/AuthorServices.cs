@@ -1,17 +1,10 @@
 ﻿using MyReadsApp.Core.DTOs.Author.Response;
-using MyReadsApp.Core.DTOs.Book.Response;
 using MyReadsApp.Core.Entities;
-using MyReadsApp.Core.Exceptions;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Infstructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SendGrid.Helpers.Mail;
+using MyReadsApp.Core.Common;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -19,48 +12,76 @@ namespace MyReadsApp.Infstructure.Services
     {
         private readonly IGenericRepository<Author> _genericRepository;
         private readonly AppDbContext _context;
+
         public AuthorServices(IGenericRepository<Author> genericRepository, AppDbContext context)
         {
             _genericRepository = genericRepository;
             _context = context;
         }
 
-        public async Task<int> CreateAsync(Author entity)
+        public async Task<Response<AuthorResponse>> CreateAsync(Author entity)
         {
-            var author = _context.Authors.FirstOrDefault(a=>a.AuthorName == entity.AuthorName);
-            if (author != null)
-                throw new FoundException("The Author Alreday Exist");
+            var exists = await _context.Authors
+                .AnyAsync(a => a.AuthorName == entity.AuthorName);
 
-            return await _genericRepository.CreateAsync(entity);
+            if (exists)
+                return Response<AuthorResponse>.Failure("The Author Already Exists", 409);
+
+            await _genericRepository.CreateAsync(entity);
+
+            return Response<AuthorResponse>.Success(BuildResponse(entity));
         }
-        public async Task<int> DeleteAsync(Guid AuthorId)
+
+        public async Task<Response<AuthorResponse>> DeleteAsync(Guid authorId)
         {
-            var author = await _context.Authors.FindAsync(AuthorId);
+            var author = await _context.Authors.FindAsync(authorId);
             if (author == null)
-                throw new NotFoundException("The Author Not Found");
-            return await _genericRepository.DeleteAsync(AuthorId);
+                return Response<AuthorResponse>.Failure("The Author Not Found",404);
+
+            await _genericRepository.DeleteAsync(authorId);
+
+            return Response<AuthorResponse>.Success(BuildResponse(author));
         }
-        public async Task<AuthorResponse?> GetAsync(Guid AuthorId) 
+
+        public async Task<Response<AuthorResponse>> GetAsync(Guid authorId)
         {
-            return await _context.Authors.Select(a => new AuthorResponse
+            var author = await _context.Authors.FindAsync(authorId);
+
+            return author == null
+                ? Response<AuthorResponse>.Failure("The Author Not Found", 404)
+                : Response<AuthorResponse>.Success(BuildResponse(author));
+        }
+
+        public async Task<Response<AuthorResponse>> UpdateAsync(Guid authorId, Author newEntity)
+        {
+            var author = await _context.Authors.FindAsync(authorId);
+            if (author == null)
+                return Response<AuthorResponse>.Failure("The Author Not Found", 404);
+
+            if (!string.IsNullOrEmpty(newEntity.Bio))
+                author.Bio = newEntity.Bio;
+
+            if (!string.IsNullOrEmpty(newEntity.AuthorName))
+                author.AuthorName = newEntity.AuthorName;
+
+            if (!string.IsNullOrEmpty(newEntity.AuthorImage))
+                author.AuthorImage = newEntity.AuthorImage;
+
+            await _genericRepository.UpdateAsync(authorId, author);
+
+            return Response<AuthorResponse>.Success(BuildResponse(author));
+        }
+
+        private static AuthorResponse BuildResponse(Author author)
+        {
+            return new AuthorResponse
             {
-                Id = a.Id,
-                AuthorImage = a.AuthorImage,
-                Bio = a.Bio,
-                AuthorName = a.AuthorName
-            }).FirstOrDefaultAsync(a => a.Id == AuthorId);
-        }
-
-        public async Task<int> UpdateAsync(Guid AuthorId, Author NewEntity)
-        {
-            var author = await _context.Authors.FindAsync(AuthorId);
-            if (author == null)
-                throw new NotFoundException("The Author Not Found");
-
-            author.Bio = NewEntity.Bio;
-            author.AuthorName = NewEntity.AuthorName;
-            author.AuthorImage = NewEntity.AuthorImage;
-            return await _genericRepository.UpdateAsync(AuthorId, author);
+                Id = author.Id,
+                AuthorName = author.AuthorName,
+                AuthorImage = author.AuthorImage,
+                Bio = author.Bio,
+            };
         }
     }
+
 }

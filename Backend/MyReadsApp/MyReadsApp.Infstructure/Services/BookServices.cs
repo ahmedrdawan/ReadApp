@@ -5,6 +5,7 @@ using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Infstructure.Data;
 using Microsoft.EntityFrameworkCore;
+using MyReadsApp.Core.Common;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -18,55 +19,79 @@ namespace MyReadsApp.Infstructure.Services
             _context = context;
         }
 
-        public async Task<int> CreateAsync(Book entity)
+        public async Task<Response<BookAuthorResponse>> CreateAsync(Book entity)
         {
             var author = await _context.Authors.FindAsync(entity.AuthorId);
             if (author == null)
-                throw new NotFoundException("The Author Not Found");
+                return Response<BookAuthorResponse>.Failure("The Author Not Found", 404);
 
             var exists = await _context.Books
                 .AnyAsync(x => x.Title == entity.Title && x.AuthorId == entity.AuthorId);
 
             if (exists)
-                throw new ConfilectException("The Book Already Exist");
+                return Response<BookAuthorResponse>.Failure("The Book Already Exist", 409);
+            await _genericRepository.CreateAsync(entity);
 
-            return await _genericRepository.CreateAsync(entity);
+            var response = BuildResponse(entity);
+
+            return Response<BookAuthorResponse>.Success(response);
         }
-        public async Task<int> DeleteAsync(Guid BookId) => await _genericRepository.DeleteAsync(BookId);
-        //public async Task<Book?> GetAsync(Guid BookId)
-        //{
-        //    return await _genericRepository.GetAsync(BookId);
-        //}
-
-        public async Task<BookAuthorResponse?> GetAsync(Guid BookId)
+        public async Task<Response<BookAuthorResponse>> DeleteAsync(Guid BookId)
         {
-            return await _context.Books.Select(b => new BookAuthorResponse
-            {
-                Id = b.Id,
-                BookImage = b.BookImage,
-                Description = b.Description,
-                AuthorId = b.AuthorId,
-                Title = b.Title
-            }).FirstOrDefaultAsync(b => b.Id == BookId);
+            var book = await _context.Books.FindAsync(BookId);
+            if (book == null)
+                return Response<BookAuthorResponse>.Failure("The Author Not Found", 404);
+
+            await _genericRepository.DeleteAsync(BookId);
+            var response = BuildResponse(book);
+            return Response<BookAuthorResponse>.Success(response);
+        }
+        
+
+        public async Task<Response<BookAuthorResponse>> GetAsync(Guid BookId)
+        {
+            var book = await _context.Books.FindAsync(BookId);
+            if (book == null)
+                return Response<BookAuthorResponse>.Failure("The Book Not Found", 404);
+
+            var response = BuildResponse(book);
+            return Response<BookAuthorResponse>.Success(response);
         }
 
-        public async Task<int> UpdateAsync(Guid id, Book newEntity)
+        public async Task<Response<BookAuthorResponse>> UpdateAsync(Guid id, Book newEntity)
         {
             var entity = await _context.Books.FindAsync(id);
 
             if (entity == null)
-                throw new KeyNotFoundException($"Book with Id '{id}' not found.");
+                return Response<BookAuthorResponse>.Failure($"Book with Id '{id}' not found.", 404);
 
             var authorExists = await _context.Authors.AnyAsync(a => a.Id == newEntity.AuthorId);
             if (!authorExists)
-                throw new KeyNotFoundException($"Author with Id '{newEntity.AuthorId}' not found.");
+                return Response<BookAuthorResponse>.Failure($"Author with Id '{newEntity.AuthorId}' not found.", 404);
 
-            entity.BookImage = newEntity.BookImage;
-            entity.Description = newEntity.Description;
-            entity.Title = newEntity.Title;
-            entity.AuthorId = newEntity.AuthorId;
+            if (!string.IsNullOrEmpty(newEntity.BookImage))
+                entity.BookImage = newEntity.BookImage;
+            if (!string.IsNullOrEmpty(newEntity.Description))
+                entity.Description = newEntity.Description;
+            if (!string.IsNullOrEmpty(newEntity.Title))
+                entity.Title = newEntity.Title;
 
-            return await _genericRepository.UpdateAsync(id, entity);
+
+            await _genericRepository.UpdateAsync(id, entity);
+            BookAuthorResponse response = BuildResponse(entity);
+            return Response<BookAuthorResponse>.Success(response);
+        }
+
+        private static BookAuthorResponse BuildResponse(Book entity)
+        {
+            return new BookAuthorResponse
+            {
+                Id = entity.Id,
+                BookImage = entity.BookImage,
+                Description = entity.Description,
+                AuthorId = entity.AuthorId,
+                Title = entity.Title
+            };
         }
     }
 }

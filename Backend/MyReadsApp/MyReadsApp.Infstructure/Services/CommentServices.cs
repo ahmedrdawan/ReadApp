@@ -1,17 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MyReadsApp.Core.DTOs.Book.Response;
+﻿using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.Comment.Response;
 using MyReadsApp.Core.Entities;
-using MyReadsApp.Core.Exceptions;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Core.Services.Interfaces.Account;
 using MyReadsApp.Infstructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -19,67 +12,86 @@ namespace MyReadsApp.Infstructure.Services
     {
         private readonly IGenericRepository<Comment> _repository;
         private readonly IUserAuthServices _userAuthServices;
-        private readonly AppDbContext context;
+        private readonly AppDbContext _context;
 
         public CommentServices(IGenericRepository<Comment> repository, AppDbContext context, IUserAuthServices userAuthServices)
         {
             _repository = repository;
-            this.context = context;
+            _context = context;
             _userAuthServices = userAuthServices;
         }
 
-        public async Task<int> CreateAsync(Comment entity)
+        public async Task<Response<CommentResponse>> CreateAsync(Comment entity)
         {
-            var user = await context.Users.FindAsync(entity.UserId);
-            if (user == null) 
-                throw new NotFoundException("The User Not Found");
+            var user = await _context.Users.FindAsync(entity.UserId);
+            if (user == null)
+                return Response<CommentResponse>.Failure("The User Not Found", 404);
 
-            var post = await context.Posts.FindAsync(entity.PostId);
+            var post = await _context.Posts.FindAsync(entity.PostId);
             if (post == null)
-                throw new NotFoundException("The Post Not Found");
+                return Response<CommentResponse>.Failure("The Post Not Found", 404);
 
-            return await _repository.CreateAsync(entity);
+            await _repository.CreateAsync(entity);
+
+            var response = BuildResponse(entity);
+            return Response<CommentResponse>.Success(response);
         }
 
-        public async Task<int> DeleteAsync(Guid CommentId)
+        public async Task<Response<CommentResponse>> DeleteAsync(Guid commentId)
         {
-            var comment = await context.Comments.FindAsync(CommentId);
-
+            var comment = await _context.Comments.FindAsync(commentId);
             if (comment == null)
-                throw new NotFoundException("The Comment Not Found");
+                return Response<CommentResponse>.Failure("The Comment Not Found", 404);
 
             if (comment.UserId != _userAuthServices.GetCurrentUser())
-                throw new NotAuthorizeException("The User Not Authorize");
+                return Response<CommentResponse>.Failure("The User Not Authorized", 403);
 
-            return await _repository.DeleteAsync(CommentId);
+            await _repository.DeleteAsync(commentId);
+
+
+            var response = BuildResponse(comment);
+            return Response<CommentResponse>.Success(response);
         }
 
-        public async Task<int> UpdateAsync(Guid CommentId, Comment NewEntity)
+        public async Task<Response<CommentResponse>> UpdateAsync(Guid commentId, Comment newEntity)
         {
-            var comment = await context.Comments.FindAsync(CommentId);
+            var comment = await _context.Comments.FindAsync(commentId);
             if (comment == null)
-                throw new NotFoundException("The Comment Not Found");
+                return Response<CommentResponse>.Failure("The Comment Not Found", 404);
 
             if (comment.UserId != _userAuthServices.GetCurrentUser())
-                throw new NotAuthorizeException("The User Not Authorize");
+                return Response<CommentResponse>.Failure("The User Not Authorized", 403);
 
-            comment.content = NewEntity.content;
+            comment.content = newEntity.content;
             comment.UpdatedAt = DateTime.UtcNow;
 
-            return await _repository.UpdateAsync(CommentId, comment);
+            await _repository.UpdateAsync(commentId, comment);
+
+            var response = BuildResponse(comment);
+            return Response<CommentResponse>.Success(response);
         }
 
-        public async Task<CommentResponse?> GetAsync(Guid CommentId)
+        public async Task<Response<CommentResponse>> GetAsync(Guid commentId)
         {
-            return await context.Comments
-                .Where(c=> c.Id == CommentId)
-                .Select(c => new CommentResponse
-                {
-                    content = c.content,
-                    UserId = c.UserId,
-                    PostId = c.PostId,
-                })
-                .FirstOrDefaultAsync();
+            var comment = await _context.Comments.FindAsync(commentId);
+            if (comment == null)
+                return Response<CommentResponse>.Failure("Comment not found", 404);
+
+            var response = BuildResponse(comment);
+
+            return Response<CommentResponse>.Success(response);
+        }
+
+        private static CommentResponse BuildResponse(Comment comment)
+        {
+            return new CommentResponse
+            {
+                Id = comment.Id,
+                content = comment.content,
+                CreatedAt = comment.CreatedAt,
+                UserId = comment.UserId,
+                PostId = comment.PostId,
+            };
         }
     }
 }

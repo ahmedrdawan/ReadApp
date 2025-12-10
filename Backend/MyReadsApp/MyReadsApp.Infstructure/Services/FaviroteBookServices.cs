@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.FaviorateBook;
 using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Exceptions;
@@ -6,6 +7,9 @@ using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Core.Services.Interfaces.Account;
 using MyReadsApp.Infstructure.Data;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -22,55 +26,72 @@ namespace MyReadsApp.Infstructure.Services
             _userAuthServices = userAuthServices;
         }
 
-        public async Task<int> CreateAsync(FaviorateBook entity)
+        public async Task<Response<FaviorateBookResponse>> CreateAsync(FaviorateBook entity)
         {
             var user = await _context.Users.FindAsync(entity.UserId);
             if (user == null)
-                throw new NotFoundException("The User Not Found");
+                return Response<FaviorateBookResponse>.Failure("The User Not Found", 404);
 
             if (user.Id != _userAuthServices.GetCurrentUser())
-                throw new NotAuthorizeException("The User Not Authorize");
+                return Response<FaviorateBookResponse>.Failure("The User Not Authorized", 403);
 
             var book = await _context.Books.FindAsync(entity.BookId);
             if (book == null)
-                throw new NotFoundException("The Book Not Found");
+                return Response<FaviorateBookResponse>.Failure("The Book Not Found", 404);
 
-            var ExistEntity = await _context.FaviorateBooks
-                .FirstOrDefaultAsync(f => f.UserId == entity.UserId && f.BookId == entity.BookId);
+            var existing = await _context.FaviorateBooks
+                .AnyAsync(f => f.UserId == entity.UserId && f.BookId == entity.BookId);
 
+            if (existing)
+                return Response<FaviorateBookResponse>.Failure("The Favorite Book Already Exists", 409);
 
-            if (ExistEntity != null)
-                throw new ConfilectException("The Faviorate Book Already Exist");
+            await _repository.CreateAsync(entity);
+            FaviorateBookResponse response = BuildResponse(entity);
 
-            return await _repository.CreateAsync(entity);
+            return Response<FaviorateBookResponse>.Success(response);
         }
 
-        public async Task<int> DeleteAsync(Guid BookId)
+        private static FaviorateBookResponse BuildResponse(FaviorateBook entity)
+        {
+            return new FaviorateBookResponse
+            {
+                UserId = entity.UserId,
+                BookId = entity.BookId,
+                CreatedAt = entity.CreatedAt,
+            };
+        }
+
+        public async Task<Response<FaviorateBookResponse>> DeleteAsync(Guid bookId)
         {
             var userId = _userAuthServices.GetCurrentUser();
 
-            var favbook = await _context.FaviorateBooks
-                .FirstOrDefaultAsync(fb => fb.UserId == userId && fb.BookId == BookId);
+            var favBook = await _context.FaviorateBooks
+                .FirstOrDefaultAsync(fb => fb.UserId == userId && fb.BookId == bookId);
 
-            if (favbook == null)
-                throw new NotFoundException("The Faviorate Book Not Found");
+            if (favBook == null)
+                return Response<FaviorateBookResponse>.Failure("The Favorite Book Not Found", 404);
 
-            _context.Remove(favbook);
-            return await _context.SaveChangesAsync();
+            _context.FaviorateBooks.Remove(favBook);
+
+            var response = BuildResponse(favBook);
+
+            return Response<FaviorateBookResponse>.Success(response);
         }
 
-        public async Task<FaviorateBookResponse?> GetFavBookAsync(Guid BookId)
+        public async Task<Response<FaviorateBookResponse>> GetFavBookAsync(Guid bookId)
         {
             var userId = _userAuthServices.GetCurrentUser();
 
-            return await _context.FaviorateBooks
-                .Where(fb => fb.UserId == userId && fb.BookId == BookId)
-                .Select(fb => new FaviorateBookResponse
-                {
-                    BookId = fb.BookId,
-                    UserId = fb.UserId,
-                    CreatedAt = fb.CreatedAt,
-                }).FirstOrDefaultAsync();
+            var favBook = await _context.FaviorateBooks
+                .SingleOrDefaultAsync(fb => fb.UserId == userId && fb.BookId == bookId);
+
+            if (favBook == null)
+                return Response<FaviorateBookResponse>.Failure("Favorite Book Not Found", 404);
+            
+               
+            var response = BuildResponse(favBook);
+
+            return Response<FaviorateBookResponse>.Success(response);
         }
     }
 }

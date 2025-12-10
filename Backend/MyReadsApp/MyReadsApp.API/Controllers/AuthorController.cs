@@ -1,9 +1,11 @@
-﻿using MyReadsApp.API.DTOs.AuthorRequest;
-using MyReadsApp.Core.Entities;
-using MyReadsApp.Core.Services.Interfaces;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+using MyReadsApp.API.DTOs.AuthorRequest;
+using MyReadsApp.Core.Entities;
+using MyReadsApp.Core.Generic.Interfaces;
+using MyReadsApp.Core.Services.Interfaces;
 
 namespace MyReadsApp.API.Controllers
 {
@@ -23,45 +25,59 @@ namespace MyReadsApp.API.Controllers
         public async Task<IActionResult> GetAuthor(Guid AuthorId)
         {
             var result = await _authorServices.GetAsync(AuthorId);
-            return result is null ? NotFound(result) : Ok(result);
+            if (!result.IsSuccess)
+                return NotFound(result);
+
+            return Ok(result.Value);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateAuthor([FromBody] CreatedAuthorRequest request)
         {
-            var auhtor = new Author
+            var author = new Author
             {
                 Id = Guid.NewGuid(),
                 AuthorName = request.AuthorName,
                 AuthorImage = request.AuthorImage,
                 Bio = request.Bio,
             };
-            var result = await _authorServices.CreateAsync(auhtor);
-            return result <= 0 ? BadRequest(request) : CreatedAtAction(
+
+            var result = await _authorServices.CreateAsync(author);
+
+            if (!result.IsSuccess)
+                return BadRequest(result);
+
+            return CreatedAtAction(
                     actionName: "GetAuthor",
-                    routeValues: new { AuthorId = auhtor.Id },
-                    value: auhtor
+                    routeValues: new { AuthorId = author.Id },
+                    value: result.Value
                 );
         }
 
         [HttpPut("{AuthorId}")]
         public async Task<IActionResult> UpdateAuthor(Guid AuthorId, UpdatedAuthorRequest request)
         {
-            var NewAuthor = new Author
+            var newAuthor = new Author
             {
+                AuthorName = request.AuthorName,
                 AuthorImage = request.AuthorImage,
                 Bio = request.Bio,
             };
 
-            var result = await _authorServices.UpdateAsync(AuthorId, NewAuthor);
-            return result <= 0 ? BadRequest(AuthorId) : NoContent();
+            var result = await _authorServices.UpdateAsync(AuthorId, newAuthor);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+
+            return NoContent();
         }
 
         [HttpDelete("{AuthorId}")]
         public async Task<IActionResult> DeleteAuthor(Guid AuthorId)
         {
             var result = await _authorServices.DeleteAsync(AuthorId);
-            return result <= 0 ? BadRequest(AuthorId) : NoContent();
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return NoContent();
         }
     }
 }
