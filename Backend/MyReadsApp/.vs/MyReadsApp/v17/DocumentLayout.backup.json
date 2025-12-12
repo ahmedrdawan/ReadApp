@@ -1,12 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|c:\\users\\vga\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.infstructure\\services\\bookservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|solutionrelative:myreadsapp.infstructure\\services\\bookservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -14,24 +9,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "BookServices.cs",
-              "DocumentMoniker": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\BookServices.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\Services\\BookServices.cs",
-              "ToolTip": "C:\\Users\\VGA\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\BookServices.cs",
-              "RelativeToolTip": "MyReadsApp.Infstructure\\Services\\BookServices.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-09T23:23:32.732Z",
-              "EditorCaption": ""
             }
           ]
         }

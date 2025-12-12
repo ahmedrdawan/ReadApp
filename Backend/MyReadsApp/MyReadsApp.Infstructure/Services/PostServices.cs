@@ -40,8 +40,7 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<PostResponse>.Failure("The Book Or User Not Found", 404);
 
             await _genericRepository.CreateAsync(entity);
-            PostResponse response = BuildResponse(entity);
-            return Response<PostResponse>.Success(response);
+            return Response<PostResponse>.Success(BuildResponse(entity));
         }
 
         public async Task<Response<PostResponse>> DeleteAsync(Guid PostId)
@@ -53,9 +52,8 @@ namespace MyReadsApp.Infstructure.Services
             if (post.UserId != _userAuthServices.GetCurrentUser())
                 return Response<PostResponse>.Failure("The User Not Authorize", 403);
 
-            await _genericRepository.DeleteAsync(PostId);
-            PostResponse response = BuildResponse(post);
-            return Response<PostResponse>.Success(response);
+            await _genericRepository.DeleteAsync(post);
+            return Response<PostResponse>.Success(BuildResponse(post));
         }
 
         public async Task<Response<PostResponse>> GetAsync(Guid PostId)
@@ -63,8 +61,7 @@ namespace MyReadsApp.Infstructure.Services
             var post = await _context.Posts.FindAsync(PostId);
             if (post == null)
                 return Response<PostResponse>.Failure("The Post Not Found", 404);
-            PostResponse response = BuildResponse(post);
-            return Response<PostResponse>.Success(response);
+            return Response<PostResponse>.Success(BuildResponse(post));
         }
 
         public async Task<Response<PostResponse>> UpdateAsync(Guid PostId, Post NewEntity)
@@ -82,9 +79,8 @@ namespace MyReadsApp.Infstructure.Services
             post.UserId = NewEntity.UserId;
             post.UpdatedAt = NewEntity.UpdatedAt;
 
-            await _genericRepository.UpdateAsync(PostId, post);
-            PostResponse response = BuildResponse(post);
-            return Response<PostResponse>.Success(response);
+            await _genericRepository.UpdateAsync(post);
+            return Response<PostResponse>.Success(BuildResponse(post));
         }
 
         private static PostResponse BuildResponse(Post entity)

@@ -75,7 +75,7 @@ namespace MyReadsApp.Infstructure.Services
 
             TokenResult Token = await _IJwtTokenServices.GenerateJwtTokenAsync(user);
             var response = BuildAuthResponse(user, Token);
-            return Response<AuthResponse>.Sucess(response, 201);
+            return Response<AuthResponse>.Success(response, 201);
         }
 
         public async Task<Response<AuthResponse>> LoginAsync(LoginRequest request)
@@ -92,7 +92,7 @@ namespace MyReadsApp.Infstructure.Services
             TokenResult Token = await _IJwtTokenServices.GenerateJwtTokenAsync(Existuser);
             var response = BuildAuthResponse(Existuser, Token);
 
-            return Response<AuthResponse>.Sucess(response);
+            return Response<AuthResponse>.Success(response);
 
         }
         private static AuthResponse BuildAuthResponse(User user, TokenResult tokenResult)

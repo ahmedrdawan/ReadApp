@@ -42,7 +42,7 @@ namespace MyReadsApp.Infstructure.Services
                 if (!result.Succeeded)
                     return Response.Failure("Invalid User", 401);
 
-                return Response.Sucess();
+                return Response.Success();
             }
             catch
             {

@@ -38,7 +38,7 @@ namespace MyReadsApp.Infstructure.Services
             if (author == null)
                 return Response<AuthorResponse>.Failure("The Author Not Found",404);
 
-            await _genericRepository.DeleteAsync(authorId);
+            await _genericRepository.DeleteAsync(author);
 
             return Response<AuthorResponse>.Success(BuildResponse(author));
         }
@@ -67,7 +67,7 @@ namespace MyReadsApp.Infstructure.Services
             if (!string.IsNullOrEmpty(newEntity.AuthorImage))
                 author.AuthorImage = newEntity.AuthorImage;
 
-            await _genericRepository.UpdateAsync(authorId, author);
+            await _genericRepository.UpdateAsync(author);
 
             return Response<AuthorResponse>.Success(BuildResponse(author));
         }

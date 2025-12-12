@@ -7,7 +7,7 @@ namespace MyReadsApp.Core.Entities
         public Guid UserId { get; set; }
         public Guid PostId { get; set; }
 
-        DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         
 
         public User User { get; set; }

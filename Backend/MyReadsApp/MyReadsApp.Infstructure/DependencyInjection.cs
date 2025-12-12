@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyReadsApp.Core.AppSetting;
 using MyReadsApp.Core.Entities.Identity;
@@ -124,8 +122,10 @@ namespace MyReadsApp.Infstructure
             services.AddScoped<IAuthServices, AuthServices>();
             services.AddScoped<ICommentServises, CommentServices>();
             services.AddScoped<IFaviroteBookServices, FaviroteBookServices>();
-
-
+            services.AddScoped<IUserBookServices, UserBookServices>();
+            services.AddScoped<ILikeServices, LikeServices>();
+            services.AddScoped<IUserfollowServices, UserfollowServices>();
+            services.AddScoped<IFriendshipServices, FriendshipServices>();
             services.AddScoped<IJwtTokenServices, JwtTokenServices>();
             services.AddScoped<IEmailservices, EmailServices>();
             //services.AddSingleton<IEmailservices, EmailServices>();

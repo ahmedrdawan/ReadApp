@@ -33,8 +33,7 @@ namespace MyReadsApp.Infstructure.Services
 
             await _repository.CreateAsync(entity);
 
-            var response = BuildResponse(entity);
-            return Response<CommentResponse>.Success(response);
+            return Response<CommentResponse>.Success(BuildResponse(entity));
         }
 
         public async Task<Response<CommentResponse>> DeleteAsync(Guid commentId)
@@ -46,11 +45,10 @@ namespace MyReadsApp.Infstructure.Services
             if (comment.UserId != _userAuthServices.GetCurrentUser())
                 return Response<CommentResponse>.Failure("The User Not Authorized", 403);
 
-            await _repository.DeleteAsync(commentId);
+            await _repository.DeleteAsync(comment);
 
 
-            var response = BuildResponse(comment);
-            return Response<CommentResponse>.Success(response);
+            return Response<CommentResponse>.Success(BuildResponse(comment));
         }
 
         public async Task<Response<CommentResponse>> UpdateAsync(Guid commentId, Comment newEntity)
@@ -65,10 +63,9 @@ namespace MyReadsApp.Infstructure.Services
             comment.content = newEntity.content;
             comment.UpdatedAt = DateTime.UtcNow;
 
-            await _repository.UpdateAsync(commentId, comment);
+            await _repository.UpdateAsync(comment);
 
-            var response = BuildResponse(comment);
-            return Response<CommentResponse>.Success(response);
+            return Response<CommentResponse>.Success(BuildResponse(comment));
         }
 
         public async Task<Response<CommentResponse>> GetAsync(Guid commentId)
@@ -77,9 +74,8 @@ namespace MyReadsApp.Infstructure.Services
             if (comment == null)
                 return Response<CommentResponse>.Failure("Comment not found", 404);
 
-            var response = BuildResponse(comment);
 
-            return Response<CommentResponse>.Success(response);
+            return Response<CommentResponse>.Success(BuildResponse(comment));
         }
 
         private static CommentResponse BuildResponse(Comment comment)

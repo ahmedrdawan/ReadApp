@@ -32,9 +32,7 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<BookAuthorResponse>.Failure("The Book Already Exist", 409);
             await _genericRepository.CreateAsync(entity);
 
-            var response = BuildResponse(entity);
-
-            return Response<BookAuthorResponse>.Success(response);
+            return Response<BookAuthorResponse>.Success(BuildResponse(entity));
         }
         public async Task<Response<BookAuthorResponse>> DeleteAsync(Guid BookId)
         {
@@ -42,9 +40,8 @@ namespace MyReadsApp.Infstructure.Services
             if (book == null)
                 return Response<BookAuthorResponse>.Failure("The Author Not Found", 404);
 
-            await _genericRepository.DeleteAsync(BookId);
-            var response = BuildResponse(book);
-            return Response<BookAuthorResponse>.Success(response);
+            await _genericRepository.DeleteAsync(book);
+            return Response<BookAuthorResponse>.Success(BuildResponse(book));
         }
         
 
@@ -54,8 +51,7 @@ namespace MyReadsApp.Infstructure.Services
             if (book == null)
                 return Response<BookAuthorResponse>.Failure("The Book Not Found", 404);
 
-            var response = BuildResponse(book);
-            return Response<BookAuthorResponse>.Success(response);
+            return Response<BookAuthorResponse>.Success(BuildResponse(book));
         }
 
         public async Task<Response<BookAuthorResponse>> UpdateAsync(Guid id, Book newEntity)
@@ -77,9 +73,8 @@ namespace MyReadsApp.Infstructure.Services
                 entity.Title = newEntity.Title;
 
 
-            await _genericRepository.UpdateAsync(id, entity);
-            BookAuthorResponse response = BuildResponse(entity);
-            return Response<BookAuthorResponse>.Success(response);
+            await _genericRepository.UpdateAsync(entity);
+            return Response<BookAuthorResponse>.Success(BuildResponse(entity));
         }
 
         private static BookAuthorResponse BuildResponse(Book entity)

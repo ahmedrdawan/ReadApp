@@ -24,9 +24,8 @@ namespace MyReadsApp.Infstructure.Services
             return await _content.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteAsync(Guid Id)
+        public async Task<int> DeleteAsync(T entity)
         {
-            var entity = await _content.Set<T>().FindAsync(Id);
             _content.Set<T>().Remove(entity);
 
             return await _content.SaveChangesAsync();
@@ -36,7 +35,7 @@ namespace MyReadsApp.Infstructure.Services
         //    return await _content.Set<T>().FindAsync(id);
         //}
 
-        public async Task<int> UpdateAsync(Guid Id, T NewEntity)
+        public async Task<int> UpdateAsync(T NewEntity)
         {
             _content.Set<T>().Update(NewEntity);
             return await _content.SaveChangesAsync();

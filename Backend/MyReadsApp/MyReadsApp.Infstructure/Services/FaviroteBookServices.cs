@@ -46,9 +46,8 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<FaviorateBookResponse>.Failure("The Favorite Book Already Exists", 409);
 
             await _repository.CreateAsync(entity);
-            FaviorateBookResponse response = BuildResponse(entity);
 
-            return Response<FaviorateBookResponse>.Success(response);
+            return Response<FaviorateBookResponse>.Success(BuildResponse(entity));
         }
 
         private static FaviorateBookResponse BuildResponse(FaviorateBook entity)
@@ -73,9 +72,7 @@ namespace MyReadsApp.Infstructure.Services
 
             _context.FaviorateBooks.Remove(favBook);
 
-            var response = BuildResponse(favBook);
-
-            return Response<FaviorateBookResponse>.Success(response);
+            return Response<FaviorateBookResponse>.Success(BuildResponse(favBook));
         }
 
         public async Task<Response<FaviorateBookResponse>> GetFavBookAsync(Guid bookId)
@@ -89,9 +86,8 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<FaviorateBookResponse>.Failure("Favorite Book Not Found", 404);
             
                
-            var response = BuildResponse(favBook);
 
-            return Response<FaviorateBookResponse>.Success(response);
+            return Response<FaviorateBookResponse>.Success(BuildResponse(favBook));
         }
     }
 }

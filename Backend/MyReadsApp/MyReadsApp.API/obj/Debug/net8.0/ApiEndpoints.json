@@ -1,0 +1,389 @@
+[
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.CommentController",
+    "Method": "CreateComment",
+    "RelativePath": "api/{PostId}/Comment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PostId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.Comment.Request.CreatedCommentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.CommentController",
+    "Method": "UpdateComment",
+    "RelativePath": "api/{PostId}/Comment/{CommentId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PostId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "CommentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.Comment.Request.UpdateCommentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.AuthController",
+    "Method": "ConfirmEmail",
+    "RelativePath": "api/Auth/confirm-email",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/Sign-In",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.Account.SignInDtos",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/Auth/Sign-Up",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.Account.SignUpDtos",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.AuthorController",
+    "Method": "CreateAuthor",
+    "RelativePath": "api/Author",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.AuthorRequest.CreatedAuthorRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.AuthorController",
+    "Method": "GetAuthor",
+    "RelativePath": "api/Author/{AuthorId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "AuthorId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.AuthorController",
+    "Method": "UpdateAuthor",
+    "RelativePath": "api/Author/{AuthorId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "AuthorId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.AuthorRequest.UpdatedAuthorRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.AuthorController",
+    "Method": "DeleteAuthor",
+    "RelativePath": "api/Author/{AuthorId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "AuthorId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.BookController",
+    "Method": "CreateBook",
+    "RelativePath": "api/Book",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.Book.BookRequest.CreatedBookRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.BookController",
+    "Method": "GetBook",
+    "RelativePath": "api/Book/{BookId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BookId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.BookController",
+    "Method": "UpdateBook",
+    "RelativePath": "api/Book/{BookId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BookId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.Book.BookRequest.UpdateBookRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.BookController",
+    "Method": "DeleteBook",
+    "RelativePath": "api/Book/{BookId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BookId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.FaviorateBookController",
+    "Method": "CreateFaviorateBook",
+    "RelativePath": "api/Faviorates/{BookId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BookId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.FaviorateBookController",
+    "Method": "DeleteFaviorateBook",
+    "RelativePath": "api/Faviorates/{BookId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BookId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.FaviorateBookController",
+    "Method": "GetFaviorateBook",
+    "RelativePath": "api/Faviorates/{BookId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BookId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.PostController",
+    "Method": "CreatePost",
+    "RelativePath": "api/Post",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.Post.CreatedPostRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.PostController",
+    "Method": "GetPost",
+    "RelativePath": "api/Post/{PostId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PostId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.PostController",
+    "Method": "UpdatePost",
+    "RelativePath": "api/Post/{PostId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PostId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.API.DTOs.Post.UpdatePostRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.PostController",
+    "Method": "DeletePost",
+    "RelativePath": "api/Post/{PostId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PostId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.CommentController",
+    "Method": "GetComment",
+    "RelativePath": "api/Post/Comment/{CommentId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CommentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.CommentController",
+    "Method": "DeleteComment",
+    "RelativePath": "api/Post/Comment/{CommentId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CommentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
