@@ -21,6 +21,10 @@ namespace MyReadsApp.API.Middleware.Exceptions
             {
                 await HandleException(context, ex, HttpStatusCode.Conflict);
             }
+            catch (NotAuthorizeException ex)
+            {
+                await HandleException(context, ex, HttpStatusCode.Unauthorized);
+            }
             catch (Exception ex)
             {
                 await HandleException(context, ex, HttpStatusCode.InternalServerError);

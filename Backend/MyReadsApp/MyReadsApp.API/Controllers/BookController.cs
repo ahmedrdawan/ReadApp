@@ -44,7 +44,7 @@ namespace MyReadsApp.API.Controllers
 
             var result = await _bookServices.CreateAsync(book);
             if (!result.IsSuccess)
-                return BadRequest(result);
+                return StatusCode(result.StatusCode, result);
             return
                 CreatedAtAction(
                     actionName: "GetBook",
@@ -65,7 +65,7 @@ namespace MyReadsApp.API.Controllers
 
             var result = await _bookServices.UpdateAsync(BookId, NewBook);
             if (!result.IsSuccess)
-                return BadRequest(result);
+                return StatusCode(result.StatusCode, result);
 
             return NoContent();
         }
@@ -75,7 +75,7 @@ namespace MyReadsApp.API.Controllers
         {
             var result = await _bookServices.DeleteAsync(BookId);
             if (!result.IsSuccess) 
-                return BadRequest(result);
+                return StatusCode(result.StatusCode, result);
             return NoContent();
         }
     }

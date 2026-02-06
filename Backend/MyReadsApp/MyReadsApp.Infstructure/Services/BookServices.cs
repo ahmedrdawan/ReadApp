@@ -38,7 +38,7 @@ namespace MyReadsApp.Infstructure.Services
         {
             var book = await _context.Books.FindAsync(BookId);
             if (book == null)
-                return Response<BookAuthorResponse>.Failure("The Author Not Found", 404);
+                return Response<BookAuthorResponse>.Failure("The Book Not Found", 404);
 
             await _genericRepository.DeleteAsync(book);
             return Response<BookAuthorResponse>.Success(BuildResponse(book));
@@ -72,6 +72,7 @@ namespace MyReadsApp.Infstructure.Services
             if (!string.IsNullOrEmpty(newEntity.Title))
                 entity.Title = newEntity.Title;
 
+            entity.AuthorId = newEntity.AuthorId;
 
             await _genericRepository.UpdateAsync(entity);
             return Response<BookAuthorResponse>.Success(BuildResponse(entity));
