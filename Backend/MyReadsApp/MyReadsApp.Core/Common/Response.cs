@@ -18,8 +18,9 @@ namespace MyReadsApp.Core.Common
         {
             IsSuccess = isSuccess;
             StatusCode = statusCode;
-            Error = error;
-            Errors.Add(error);
+            Error = error ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(error))
+                Errors.Add(error);
 
         }
         protected Response(bool isSuccess, string error, List<string> errors, int statusCode)
@@ -29,8 +30,8 @@ namespace MyReadsApp.Core.Common
             Errors = errors;
             Error = Errors?.FirstOrDefault() ?? string.Empty;
         }
-        public static Response Success(int statusCode = 200) => new(true, default ,statusCode);
-        public static Response Failure(List<string> errors, int statusCode = 400) => new(false, default, errors ,statusCode);
+        public static Response Success(int statusCode = 200) => new(true, string.Empty ,statusCode);
+        public static Response Failure(List<string> errors, int statusCode = 400) => new(false, string.Empty, errors ,statusCode);
         public static Response Failure(string error, int statusCode = 400) => new(false, error ,statusCode);
     }
 

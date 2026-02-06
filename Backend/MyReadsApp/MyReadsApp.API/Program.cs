@@ -47,6 +47,7 @@ namespace MyReadsApp.API
             }
             app.UseMiddleware<ExceptionHandeler>();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
