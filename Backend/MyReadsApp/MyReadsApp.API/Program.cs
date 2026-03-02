@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.HttpLogging;
 using MyReadsApp.API.Middleware.Exceptions;
 using MyReadsApp.Core.Entities.Identity;
 using MyReadsApp.Infstructure;
@@ -12,12 +13,23 @@ namespace MyReadsApp.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
 
             builder.Services.AddControllers() 
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+
+            builder.Services.AddHttpLogging(logging =>
+            {
+                logging.LoggingFields = HttpLoggingFields.RequestMethod |
+                                        HttpLoggingFields.RequestPath |
+                                        HttpLoggingFields.ResponseStatusCode |
+                                        HttpLoggingFields.Duration;
+            });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -46,6 +58,7 @@ namespace MyReadsApp.API
                 app.UseSwaggerUI();
             }
             app.UseMiddleware<ExceptionHandeler>();
+            app.UseHttpLogging();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
