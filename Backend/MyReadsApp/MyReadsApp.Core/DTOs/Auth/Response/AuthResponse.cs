@@ -25,4 +25,10 @@ namespace MyReadsApp.Core.DTOs.Auth.Response
         string Token,
         DateTime ExpiresAt
     );
+
+    public record RefreshTokenResponse
+    (
+        string Token,
+        DateTime ExpiresAt
+    );
 }

@@ -47,18 +47,24 @@ namespace MyReadsApp.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string code)
+        //[HttpGet("confirm-email")]
+        //public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string code)
+        //{
+        //    if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(code))
+        //        return NotFound();
+
+        //    var result = await _emailservices.ConfirmEmailAsync(new ConfirmEmailRequest(userId, code));
+        //    if (!result.IsSuccess)
+        //        return BadRequest(result);
+
+        //    return Redirect($"{_Configration["appURL"]}/confirmemail.html");
+        //}
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
         {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(code))
-                return NotFound();
-
-            var result = await _emailservices.ConfirmEmailAsync(new ConfirmEmailRequest(userId, code));
-            if (!result.IsSuccess)
-                return BadRequest(result);
-
-            return Redirect($"{_Configration["appURL"]}/confirmemail.html");
+            var result = await _authServices.RefreshTokenAsync();
+            return StatusCode(result.StatusCode, result);
         }
-
     }
 }

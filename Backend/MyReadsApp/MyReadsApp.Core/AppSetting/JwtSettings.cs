@@ -12,5 +12,7 @@ namespace MyReadsApp.Core.AppSetting
         public string Issuer { get; set; } = string.Empty;
         public string Audience { get; set; } = string.Empty;
         public int ExpiryInMinutes { get; set; } = 30;
+        public int RefreshTokenExpiration { get; set; } = 30;
+
     }
 }

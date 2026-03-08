@@ -29,5 +29,6 @@ namespace MyReadsApp.Core.Entities.Identity
         public ICollection<UserBook> UserBooks { get; set; }
         public ICollection<UserFollow> UserFollowers { get; set; }
         public ICollection<UserFollow> UserFollowings { get; set; }
+        public ICollection<RefreshToken> RefreshTokens { get; set; }
     }
 }
