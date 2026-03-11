@@ -4,6 +4,10 @@ using MyReadsApp.Core.DTOs.Auth.Request;
 using MyReadsApp.Core.Services.Interfaces.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyReadsApp.Infstructure.Services;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace MyReadsApp.API.Controllers
 {
@@ -13,14 +17,14 @@ namespace MyReadsApp.API.Controllers
     {
 
         private readonly IAuthServices _authServices;
-        private readonly IEmailservices _emailservices;
         private readonly IConfiguration _Configration;
+        private readonly JwtTokenServices _jwtTokenServices;
 
-        public AuthController(IAuthServices authServices, IEmailservices emailservices, IConfiguration configration)
+        public AuthController(IAuthServices authServices, IConfiguration configration, JwtTokenServices jwtTokenServices)
         {
             _authServices = authServices;
-            _emailservices = emailservices;
             _Configration = configration;
+            _jwtTokenServices = jwtTokenServices;
         }
 
         [HttpPost("Sign-Up")]
@@ -46,25 +50,51 @@ namespace MyReadsApp.API.Controllers
 
             return StatusCode(result.StatusCode, result);
         }
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] Guid userId, [FromQuery]string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Invalid email confirmation request.");
 
-        //[HttpGet("confirm-email")]
-        //public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string code)
-        //{
-        //    if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(code))
-        //        return NotFound();
+            var result = await _authServices.ConfirmEmailAsync(userId, token);
+            return StatusCode(result.StatusCode, result);
+        }
 
-        //    var result = await _emailservices.ConfirmEmailAsync(new ConfirmEmailRequest(userId, code));
-        //    if (!result.IsSuccess)
-        //        return BadRequest(result);
-
-        //    return Redirect($"{_Configration["appURL"]}/confirmemail.html");
-        //}
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken()
         {
-            var result = await _authServices.RefreshTokenAsync();
+            var result = await _jwtTokenServices.RefreshTokenAsync();
             return StatusCode(result.StatusCode, result);
         }
+
+        #region External Login
+        [HttpGet("google-login")]
+        public IActionResult GoogleLogin()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleCallback")
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("google-callback")]
+        public async Task<IActionResult> GoogleCallback()
+        {
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            if (!result.Succeeded)
+                return BadRequest("Google login failed.");
+
+            var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+            var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (string.IsNullOrEmpty(email))
+                return BadRequest("Google login did not provide an email.");
+
+            var response = await _authServices.GoogleLoginAsync(email, name);
+            return StatusCode(response.StatusCode, response);
+        }
+        #endregion
     }
 }

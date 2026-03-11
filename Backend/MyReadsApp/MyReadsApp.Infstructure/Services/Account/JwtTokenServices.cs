@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyReadsApp.Core.AppSetting;
+using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.Auth.Response;
 using MyReadsApp.Core.Entities.Identity;
 using MyReadsApp.Core.Services.Interfaces.Account;
@@ -17,11 +20,52 @@ namespace MyReadsApp.Infstructure.Services
     {
         private readonly JwtSettings _jwtSettings;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<User> _userManager;
 
-        public JwtTokenServices(IOptions<JwtSettings> jwtSettings, IHttpContextAccessor httpContextAccessor)
+        public JwtTokenServices(IOptions<JwtSettings> jwtSettings, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
         {
             _jwtSettings = jwtSettings.Value ?? throw new ArgumentNullException(nameof(jwtSettings));
             _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
+        }
+
+        public async Task<Response<RefreshTokenResponse>> RefreshTokenAsync()
+        {
+            string? refreshTokenValue = await GetRefreshTokenFromCookies();
+
+            if (refreshTokenValue == null)
+                return Response<RefreshTokenResponse>.Failure("Refresh token not found.", 401);
+
+            var storedToken = await _userManager.Users
+                .SelectMany(u => u.RefreshTokens)
+                .FirstOrDefaultAsync(t => t.Token == refreshTokenValue);
+
+            if (storedToken == null || !storedToken.IsActive)
+                return Response<RefreshTokenResponse>.Failure("Invalid refresh token.", 401);
+
+            var user = await _userManager.FindByIdAsync(storedToken.UserId.ToString());
+
+            if (user == null)
+                return Response<RefreshTokenResponse>.Failure("User not found.", 404);
+
+            storedToken.CreatedAt = DateTime.UtcNow;
+
+            var newRefreshToken = await GenerateRefreshTokenAsync();
+
+            user.RefreshTokens.Add(newRefreshToken);
+
+            await _userManager.UpdateAsync(user);
+
+            await SetRefreshTokenInCookies(
+                newRefreshToken.Token,
+                newRefreshToken.ExpireAt
+            );
+
+            var newJwt = await GenerateJwtTokenAsync(user);
+
+            var response = new RefreshTokenResponse(newRefreshToken.Token, newRefreshToken.ExpireAt);
+
+            return Response<RefreshTokenResponse>.Success(response);
         }
 
 

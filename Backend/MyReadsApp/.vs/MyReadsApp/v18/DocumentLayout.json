@@ -1,7 +1,20 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.infstructure\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|solutionrelative:myreadsapp.infstructure\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4118045-40E5-4B0C-B432-2F66E87BAB89}|MyReadsApp.API\\MyReadsApp.API.csproj|solutionrelative:myreadsapp.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.core\\services\\interfaces\\account\\iauthservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|solutionrelative:myreadsapp.core\\services\\interfaces\\account\\iauthservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,8 +22,47 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IAuthServices.cs",
+              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\Services\\Interfaces\\Account\\IAuthServices.cs",
+              "RelativeDocumentMoniker": "MyReadsApp.Core\\Services\\Interfaces\\Account\\IAuthServices.cs",
+              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\Services\\Interfaces\\Account\\IAuthServices.cs",
+              "RelativeToolTip": "MyReadsApp.Core\\Services\\Interfaces\\Account\\IAuthServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-11T14:20:32.365Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "MyReadsApp.API\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.API\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "MyReadsApp.API\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAADsAAAAAAAAAAAAAADsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-11T14:03:09.355Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DependencyInjection.cs",
+              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\DependencyInjection.cs",
+              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\DependencyInjection.cs",
+              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\DependencyInjection.cs",
+              "RelativeToolTip": "MyReadsApp.Infstructure\\DependencyInjection.cs",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAAAFwAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-11T13:57:52.935Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"

@@ -13,6 +13,7 @@ namespace MyReadsApp.Core.Services.Interfaces.Account
     {
         Task<Response<AuthResponse>> RegisterAsync(RegisterRequest request);
         Task<Response<AuthResponse>> LoginAsync(LoginRequest request);
-        Task<Response<AuthResponse>> RefreshTokenAsync();
+        Task<Response> ConfirmEmailAsync(Guid userId, string token);
+        Task<Response<AuthResponse>> GoogleLoginAsync(string email, string? name);
     }
 }

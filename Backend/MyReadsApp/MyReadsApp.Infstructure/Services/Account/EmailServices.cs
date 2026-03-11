@@ -10,6 +10,7 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Text;
 using Response = MyReadsApp.Core.Common.Response;
+using MyReadsApp.Core.AppSetting;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -17,55 +18,29 @@ namespace MyReadsApp.Infstructure.Services
     {
         private readonly IConfiguration _config;
         private readonly UserManager<User> _userManager;
+        private readonly GridSetting _gridSetting;
 
-        public EmailServices(IConfiguration config, UserManager<User> userManager)
+        public EmailServices(IConfiguration config, UserManager<User> userManager, GridSetting gridSetting)
         {
             _config = config;
             _userManager = userManager;
+            _gridSetting = gridSetting;
         }
 
-
-
-        public async Task<Response> ConfirmEmailAsync(ConfirmEmailRequest request)
+        
+        public async Task<bool> SendEmailAsync(string toEmail, string subject, string content)
         {
+            var apiKey = _gridSetting.SenderGridApiKey;
+            var client = new SendGridClient(apiKey);
 
-            try
-            {
-                var user = await _userManager.FindByIdAsync(request.UserId);
-                if (user == null)
-                    return Response.Failure("Invalid User", 401);
+            var from = new EmailAddress(_gridSetting.SenderEmail, "MyReadsApp");
+            var to = new EmailAddress(toEmail);
 
-                var token = WebEncoders.Base64UrlDecode(request.code);
-                string normalToken = Encoding.UTF8.GetString(token);
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, "", content);
 
-                var result = await _userManager.ConfirmEmailAsync(user, normalToken);
-                if (!result.Succeeded)
-                    return Response.Failure("Invalid User", 401);
+            var response = await client.SendEmailAsync(msg);
 
-                return Response.Success();
-            }
-            catch
-            {
-                return Response.Failure("Server Error", 500);
-            }
-        }
-
-        public async Task SendEmailAsync(string toEmail, string subject, string content)
-        {
-            try
-            {
-                var apiKey = _config["SenderGridApiKey"];
-                var client = new SendGridClient(apiKey);
-                var from = new EmailAddress(_config["SenderEmail"],content );
-                var to = new EmailAddress(toEmail);
-                var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
-                var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
-
-            }
-            catch
-            {
-                throw;
-            }
+            return response.IsSuccessStatusCode;
         }
     }
 

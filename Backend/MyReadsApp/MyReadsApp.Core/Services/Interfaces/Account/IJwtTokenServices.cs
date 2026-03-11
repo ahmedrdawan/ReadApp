@@ -1,4 +1,5 @@
-﻿using MyReadsApp.Core.DTOs.Auth.Response;
+﻿using MyReadsApp.Core.Common;
+using MyReadsApp.Core.DTOs.Auth.Response;
 using MyReadsApp.Core.Entities.Identity;
 
 namespace MyReadsApp.Core.Services.Interfaces.Account
@@ -9,5 +10,7 @@ namespace MyReadsApp.Core.Services.Interfaces.Account
         Task<Entities.Identity.RefreshToken> GenerateRefreshTokenAsync();
         Task SetRefreshTokenInCookies(string Token, DateTime ExpireAt);
         Task<string?> GetRefreshTokenFromCookies();
+        Task<Response<RefreshTokenResponse>> RefreshTokenAsync();
+
     }
 }

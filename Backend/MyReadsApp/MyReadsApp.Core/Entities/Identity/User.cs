@@ -17,6 +17,7 @@ namespace MyReadsApp.Core.Entities.Identity
         public string? UserImage { get; set; }
 
         public string Role { get; set; } = "User";
+        public bool EmailConfirmed { get; set; }
         public DateTime? BirthDate { get;set; }
         public DateTime CreatedAt { get; set; }
 

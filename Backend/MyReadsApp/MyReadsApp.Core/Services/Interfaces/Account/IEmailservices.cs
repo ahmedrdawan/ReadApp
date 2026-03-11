@@ -12,8 +12,6 @@ namespace MyReadsApp.Core.Services.Interfaces.Account
 {
     public interface IEmailservices
     {
-
-        Task<Response> ConfirmEmailAsync(ConfirmEmailRequest request);
-        Task SendEmailAsync(string toEmail, string subject, string content);
+        Task<bool> SendEmailAsync(string toEmail, string subject, string content);
     }
 }

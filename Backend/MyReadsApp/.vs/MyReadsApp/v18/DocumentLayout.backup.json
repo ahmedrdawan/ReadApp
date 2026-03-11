@@ -1,44 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.infstructure\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|solutionrelative:myreadsapp.infstructure\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.infstructure\\services\\account\\jwttokenservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|solutionrelative:myreadsapp.infstructure\\services\\account\\jwttokenservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.core\\dtos\\auth\\response\\authresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|solutionrelative:myreadsapp.core\\dtos\\auth\\response\\authresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.core\\appsetting\\jwtsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|solutionrelative:myreadsapp.core\\appsetting\\jwtsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.infstructure\\services\\account\\authservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|solutionrelative:myreadsapp.infstructure\\services\\account\\authservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.core\\entities\\identity\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|solutionrelative:myreadsapp.core\\entities\\identity\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.infstructure\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|solutionrelative:myreadsapp.infstructure\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.core\\services\\interfaces\\account\\irefreshtokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{ECCA1C4C-20D3-4228-9AFC-1CEE3271998B}|MyReadsApp.Core\\MyReadsApp.Core.csproj|solutionrelative:myreadsapp.core\\services\\interfaces\\account\\irefreshtokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|c:\\users\\elbrine\\desktop\\readapp\\backend\\myreadsapp\\myreadsapp.infstructure\\services\\account\\refreshtokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{364FD144-5B22-4949-8D93-180D2D83E16C}|MyReadsApp.Infstructure\\MyReadsApp.Infstructure.csproj|solutionrelative:myreadsapp.infstructure\\services\\account\\refreshtokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -46,128 +9,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "RefreshToken.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\Entities\\Identity\\RefreshToken.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Core\\Entities\\Identity\\RefreshToken.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\Entities\\Identity\\RefreshToken.cs",
-              "RelativeToolTip": "MyReadsApp.Core\\Entities\\Identity\\RefreshToken.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:58:02.48Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "JwtTokenServices.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\Account\\JwtTokenServices.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\Services\\Account\\JwtTokenServices.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\Account\\JwtTokenServices.cs",
-              "RelativeToolTip": "MyReadsApp.Infstructure\\Services\\Account\\JwtTokenServices.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAAADIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:50:03.443Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AuthServices.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\Account\\AuthServices.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\Services\\Account\\AuthServices.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\Account\\AuthServices.cs",
-              "RelativeToolTip": "MyReadsApp.Infstructure\\Services\\Account\\AuthServices.cs",
-              "ViewState": "AgIAAHEAAAAAAAAAAAAAAHEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:50:08.747Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "JwtSettings.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\AppSetting\\JwtSettings.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Core\\AppSetting\\JwtSettings.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\AppSetting\\JwtSettings.cs",
-              "RelativeToolTip": "MyReadsApp.Core\\AppSetting\\JwtSettings.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:49:49.063Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AuthResponse.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\DTOs\\Auth\\Response\\AuthResponse.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Core\\DTOs\\Auth\\Response\\AuthResponse.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\DTOs\\Auth\\Response\\AuthResponse.cs",
-              "RelativeToolTip": "MyReadsApp.Core\\DTOs\\Auth\\Response\\AuthResponse.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:49:56.075Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DependencyInjection.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\DependencyInjection.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\DependencyInjection.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\DependencyInjection.cs",
-              "RelativeToolTip": "MyReadsApp.Infstructure\\DependencyInjection.cs",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAAAIgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:58:38.4Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\Data\\AppDbContext.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "MyReadsApp.Infstructure\\Data\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAABPwB4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:58:11.292Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "IRefreshTokenService.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\Services\\Interfaces\\Account\\IRefreshTokenService.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Core\\Services\\Interfaces\\Account\\IRefreshTokenService.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Core\\Services\\Interfaces\\Account\\IRefreshTokenService.cs",
-              "RelativeToolTip": "MyReadsApp.Core\\Services\\Interfaces\\Account\\IRefreshTokenService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:58:22.56Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "RefreshTokenService.cs",
-              "DocumentMoniker": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\Account\\RefreshTokenService.cs",
-              "RelativeDocumentMoniker": "MyReadsApp.Infstructure\\Services\\Account\\RefreshTokenService.cs",
-              "ToolTip": "C:\\Users\\Elbrine\\Desktop\\ReadApp\\Backend\\MyReadsApp\\MyReadsApp.Infstructure\\Services\\Account\\RefreshTokenService.cs",
-              "RelativeToolTip": "MyReadsApp.Infstructure\\Services\\Account\\RefreshTokenService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T12:58:33.912Z",
-              "EditorCaption": ""
             }
           ]
         }

@@ -77,6 +77,9 @@ namespace MyReadsApp.Infstructure
             var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>()
                 ?? throw new InvalidOperationException("JwtSettings section missing.");
 
+            var googleSettings = configuration.GetSection("Authentication:Google").Get<GoogleSettings>()
+                ?? throw new InvalidOperationException("Google authentication settings missing.");
+
             var key = Encoding.UTF8.GetBytes(jwtSettings.Key);
 
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
@@ -102,6 +105,12 @@ namespace MyReadsApp.Infstructure
                         ValidAudience = jwtSettings.Audience,
                         ClockSkew = TimeSpan.Zero
                     };
+                }).AddCookie()
+                .AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = googleSettings.ClientId;
+                    googleOptions.ClientSecret = googleSettings.ClientSecret;
+                    googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
                 });
 
             return services;
@@ -127,8 +136,7 @@ namespace MyReadsApp.Infstructure
             services.AddScoped<IUserfollowServices, UserfollowServices>();
             services.AddScoped<IFriendshipServices, FriendshipServices>();
             services.AddScoped<IJwtTokenServices, JwtTokenServices>();
-            services.AddScoped<IEmailservices, EmailServices>();
-            //services.AddSingleton<IEmailservices, EmailServices>();
+            services.AddSingleton<IEmailservices, EmailServices>();
             return services;
         }
 
