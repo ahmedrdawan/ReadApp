@@ -24,6 +24,7 @@ namespace MyReadsApp.Infstructure
             IConfiguration configration)
         {
             services.AddDatabase(configration);
+            services.AddRedisCache(configration);
             services.AddIdentitySystem();
             services.AddJwtAuthentication(configration);
             services.AddScopedServices();
@@ -41,6 +42,21 @@ namespace MyReadsApp.Infstructure
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configration.GetConnectionString("default"),
                 b=>b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
+
+            return services;
+        }
+        //----------------------------------------------------
+        // Database
+        //----------------------------------------------------
+        private static IServiceCollection AddRedisCache(
+            this IServiceCollection services,
+            IConfiguration configration)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configration.GetConnectionString("redis");
+                options.InstanceName = "MyReadsApp:";
+            });
 
             return services;
         }

@@ -6,6 +6,8 @@ using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Infstructure.Data;
 using Microsoft.EntityFrameworkCore;
 using MyReadsApp.Core.Common;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -13,10 +15,13 @@ namespace MyReadsApp.Infstructure.Services
     {
         private readonly IGenericRepository<Book> _genericRepository;
         private readonly AppDbContext _context;
-        public BookServices(IGenericRepository<Book> genericRepository, AppDbContext context)
+        private readonly IDistributedCache _cache;
+        private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web);
+        public BookServices(IGenericRepository<Book> genericRepository, AppDbContext context, IDistributedCache cache)
         {
             _genericRepository = genericRepository;
             _context = context;
+            _cache = cache;
         }
 
         public async Task<Response<BookAuthorResponse>> CreateAsync(Book entity)
@@ -32,8 +37,12 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<BookAuthorResponse>.Failure("The Book Already Exist", 409);
             await _genericRepository.CreateAsync(entity);
 
-            return Response<BookAuthorResponse>.Success(BuildResponse(entity));
+            var response = BuildResponse(entity);
+            await SetBookInCacheAsync(entity.Id, response);
+
+            return Response<BookAuthorResponse>.Success(response);
         }
+
         public async Task<Response<BookAuthorResponse>> DeleteAsync(Guid BookId)
         {
             var book = await _context.Books.FindAsync(BookId);
@@ -41,17 +50,29 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<BookAuthorResponse>.Failure("The Book Not Found", 404);
 
             await _genericRepository.DeleteAsync(book);
+            await _cache.RemoveAsync(GetCacheKey(BookId));
             return Response<BookAuthorResponse>.Success(BuildResponse(book));
         }
         
 
         public async Task<Response<BookAuthorResponse>> GetAsync(Guid BookId)
         {
+            string cacheKey = GetCacheKey(BookId);
+            string? cachedData = await _cache.GetStringAsync(cacheKey);
+            if (cachedData != null)
+            {
+                var cachedResponse = JsonSerializer.Deserialize<BookAuthorResponse>(cachedData, _jsonOptions);
+                if (cachedResponse != null)
+                    return Response<BookAuthorResponse>.Success(cachedResponse);
+            }
+
             var book = await _context.Books.FindAsync(BookId);
             if (book == null)
                 return Response<BookAuthorResponse>.Failure("The Book Not Found", 404);
 
-            return Response<BookAuthorResponse>.Success(BuildResponse(book));
+            var response = BuildResponse(book);
+            await SetBookInCacheAsync(book.Id, response);
+            return Response<BookAuthorResponse>.Success(response);
         }
 
         public async Task<Response<BookAuthorResponse>> UpdateAsync(Guid id, Book newEntity)
@@ -75,9 +96,25 @@ namespace MyReadsApp.Infstructure.Services
             entity.AuthorId = newEntity.AuthorId;
 
             await _genericRepository.UpdateAsync(entity);
-            return Response<BookAuthorResponse>.Success(BuildResponse(entity));
+            var response = BuildResponse(entity);
+            await _cache.RemoveAsync(GetCacheKey(id));
+            await SetBookInCacheAsync(entity.Id, response);
+            return Response<BookAuthorResponse>.Success(response);
         }
 
+        #region Cache Methods
+        private static string GetCacheKey(Guid id) => $"Book:{id}";
+        private async Task SetBookInCacheAsync(Guid Id, BookAuthorResponse response)
+        {
+            string value = JsonSerializer.Serialize(response, _jsonOptions);
+            await _cache.SetStringAsync(GetCacheKey(Id), value, new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30),
+            });
+        }
+        #endregion
+
+        #region Helper Methods
         private static BookAuthorResponse BuildResponse(Book entity)
         {
             return new BookAuthorResponse
@@ -89,5 +126,6 @@ namespace MyReadsApp.Infstructure.Services
                 Title = entity.Title
             };
         }
+        #endregion
     }
 }
