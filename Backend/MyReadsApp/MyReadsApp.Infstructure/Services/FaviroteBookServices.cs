@@ -1,15 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.FaviorateBook;
 using MyReadsApp.Core.Entities;
-using MyReadsApp.Core.Exceptions;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Core.Services.Interfaces.Account;
 using MyReadsApp.Infstructure.Data;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using MyReadsApp.Infstructure.Services.Cache;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -18,12 +16,14 @@ namespace MyReadsApp.Infstructure.Services
         private readonly IGenericRepository<FaviorateBook> _repository;
         private readonly AppDbContext _context;
         private readonly IUserAuthServices _userAuthServices;
+        private readonly IDistributedCache _cache;
 
-        public FaviroteBookServices(IGenericRepository<FaviorateBook> repository, AppDbContext context, IUserAuthServices userAuthServices)
+        public FaviroteBookServices(IGenericRepository<FaviorateBook> repository, AppDbContext context, IUserAuthServices userAuthServices, IDistributedCache cache)
         {
             _repository = repository;
             _context = context;
             _userAuthServices = userAuthServices;
+            _cache = cache;
         }
 
         public async Task<Response<FaviorateBookResponse>> CreateAsync(FaviorateBook entity)
@@ -46,8 +46,10 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<FaviorateBookResponse>.Failure("The Favorite Book Already Exists", 409);
 
             await _repository.CreateAsync(entity);
+            var response = BuildResponse(entity);
+            await _cache.SetRecordAsync(GetCacheKey(entity.UserId, entity.BookId), response);
 
-            return Response<FaviorateBookResponse>.Success(BuildResponse(entity));
+            return Response<FaviorateBookResponse>.Success(response);
         }
 
         private static FaviorateBookResponse BuildResponse(FaviorateBook entity)
@@ -71,6 +73,8 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<FaviorateBookResponse>.Failure("The Favorite Book Not Found", 404);
 
             _context.FaviorateBooks.Remove(favBook);
+            await _context.SaveChangesAsync();
+            await _cache.RemoveAsync(GetCacheKey(userId, bookId));
 
             return Response<FaviorateBookResponse>.Success(BuildResponse(favBook));
         }
@@ -78,16 +82,23 @@ namespace MyReadsApp.Infstructure.Services
         public async Task<Response<FaviorateBookResponse>> GetFavBookAsync(Guid bookId)
         {
             var userId = _userAuthServices.GetCurrentUser();
+            var key = GetCacheKey(userId, bookId);
+
+            var cached = await _cache.GetRecordAsync<FaviorateBookResponse>(key);
+            if (cached is not null)
+                return Response<FaviorateBookResponse>.Success(cached);
 
             var favBook = await _context.FaviorateBooks
                 .SingleOrDefaultAsync(fb => fb.UserId == userId && fb.BookId == bookId);
 
             if (favBook == null)
                 return Response<FaviorateBookResponse>.Failure("Favorite Book Not Found", 404);
-            
-               
 
-            return Response<FaviorateBookResponse>.Success(BuildResponse(favBook));
+            var response = BuildResponse(favBook);
+            await _cache.SetRecordAsync(key, response);
+            return Response<FaviorateBookResponse>.Success(response);
         }
+
+        private static string GetCacheKey(Guid userId, Guid bookId) => $"FavoriteBook:{userId}:{bookId}";
     }
 }
