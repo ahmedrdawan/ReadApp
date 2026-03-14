@@ -6,6 +6,7 @@ using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Enums;
 using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Core.Services.Interfaces.Account;
+using MyReadsApp.Infstructure.Services;
 
 namespace MyReadsApp.API.Controllers
 {
@@ -15,11 +16,13 @@ namespace MyReadsApp.API.Controllers
     {
         private readonly IFriendshipServices _friendshipServices;
         private readonly IUserAuthServices _userAuthServices;
+        private readonly IRecommendionServices _recommendionServices;
 
-        public FriendShipController(IFriendshipServices friendshipServices, IUserAuthServices userAuthServices)
+        public FriendShipController(IFriendshipServices friendshipServices, IUserAuthServices userAuthServices, IRecommendionServices recommendionServices)
         {
             _friendshipServices = friendshipServices;
             _userAuthServices = userAuthServices;
+            _recommendionServices = recommendionServices;
         }
 
         [HttpPost("{friendId}")]
@@ -44,6 +47,13 @@ namespace MyReadsApp.API.Controllers
             var result = await _friendshipServices.DeleteAsync(_userAuthServices.GetCurrentUser(), friendId);
             return StatusCode(result.StatusCode, result);
 
+        }
+
+        [HttpGet("suggestions")]
+        public async Task<IActionResult> GetSuggestions()
+        {
+            var result = await _recommendionServices.FriendsSuggestionAsync();
+            return Ok(result);
         }
 
         [HttpGet("accepted")]

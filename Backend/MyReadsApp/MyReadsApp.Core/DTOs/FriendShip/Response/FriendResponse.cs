@@ -2,6 +2,6 @@
 {
     public class FriendResponse : BaseFriendShipResponse
     {
-        public string UserFriend {  get; set; }
+        public Guid UserFriendId {  get; set; }
     }
 }

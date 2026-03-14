@@ -23,7 +23,8 @@ namespace MyReadsApp.Infstructure.Services
         public async Task<Response<FriendShipResponse>> CreateAsync(FriendShip entity)
         {
             var friendShipExisting = await _context.FriendShips
-                .FirstOrDefaultAsync(fh => fh.UserId == entity.UserId && fh.FriendId == entity.FriendId);
+                .FirstOrDefaultAsync(fh => fh.UserId == entity.UserId && fh.FriendId == entity.FriendId
+                || fh.UserId == entity.FriendId && fh.FriendId == entity.UserId);
 
             if (friendShipExisting != null)
                 return Response<FriendShipResponse>.Failure("The Friend Ship Is already Exist", 409);
@@ -38,7 +39,8 @@ namespace MyReadsApp.Infstructure.Services
         public async Task<Response<FriendShipResponse>> DeleteAsync(Guid SendUserId, Guid ReceivedUserId)
         {
             var friendShipExisting = await _context.FriendShips
-                .FirstOrDefaultAsync(fh => fh.UserId == SendUserId && fh.FriendId == ReceivedUserId);
+                .FirstOrDefaultAsync(fh => fh.UserId == SendUserId && fh.FriendId == ReceivedUserId
+                || fh.UserId == SendUserId && fh.FriendId == ReceivedUserId);
 
 
             if (friendShipExisting == null)
@@ -51,18 +53,21 @@ namespace MyReadsApp.Infstructure.Services
 
         public async Task<IEnumerable<FriendResponse>> GetAllAsync(Expression<Func<FriendShip, bool>> filter)
         {
-            return await _context.FriendShips.Where(filter)
+            return await _context.FriendShips
+                .AsNoTracking()
+                .Where(filter)
                 .Select(fh => new FriendResponse
                 {
-                    UserFriend = fh.FriendUser.UserName,
+                    UserFriendId = fh.FriendId,
                     CreatedAt = fh.CreatedAt,
                     Status = fh.Status
                 }).ToListAsync();
         }
 
+        #region Helper Method
         private async Task<FriendShipResponse> BuildRepsonse(FriendShip entity)
         {
-            return await _context.FriendShips
+            var friendship =  await _context.FriendShips
                 .Where(fh => fh.UserId == entity.UserId && fh.FriendId == entity.FriendId)
                 .Select(fh => new FriendShipResponse
                 {
@@ -72,6 +77,11 @@ namespace MyReadsApp.Infstructure.Services
                     Status = fh.Status,
                 })
                 .FirstOrDefaultAsync();
+            if (friendship == null)
+                return new FriendShipResponse();
+
+            return friendship;
         }
+        #endregion
     }
 }

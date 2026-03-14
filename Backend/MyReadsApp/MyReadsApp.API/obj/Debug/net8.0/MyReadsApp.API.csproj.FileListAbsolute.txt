@@ -661,3 +661,7 @@ C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\MyReadsApp.API.pdb
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\MyReadsApp.API.genruntimeconfig.cache
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\ref\MyReadsApp.API.dll
+C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
+C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\bin\Debug\net8.0\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\bin\Debug\net8.0\StackExchange.Redis.dll

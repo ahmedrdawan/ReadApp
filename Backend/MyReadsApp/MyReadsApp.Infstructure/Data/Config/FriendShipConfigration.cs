@@ -8,6 +8,7 @@ namespace MyReadsApp.Infstructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<FriendShip> builder)
         {
+            builder.HasIndex(f => new { f.UserId, f.FriendId });
 
             builder.HasOne(fs => fs.User)
                 .WithMany(u => u.SentFriendShips)
