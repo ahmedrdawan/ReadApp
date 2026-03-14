@@ -1,20 +1,13 @@
-﻿using MyReadsApp.Core.DTOs.Book.Response;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.Post.Response;
 using MyReadsApp.Core.Entities;
-using MyReadsApp.Core.Exceptions;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
-using MyReadsApp.Infstructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using MyReadsApp.Core.Services.Interfaces.Account;
-using MyReadsApp.Core.Common;
-using Microsoft.AspNetCore.Http;
+using MyReadsApp.Infstructure.Data;
+using MyReadsApp.Infstructure.Services.Cache;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -23,12 +16,14 @@ namespace MyReadsApp.Infstructure.Services
         private readonly IGenericRepository<Post> _genericRepository;
         private readonly IUserAuthServices _userAuthServices;
         private readonly AppDbContext _context;
+        private readonly IDistributedCache _cache;
 
-        public PostServices(IGenericRepository<Post> genericRepository, AppDbContext context, IUserAuthServices userAuthServices)
+        public PostServices(IGenericRepository<Post> genericRepository, AppDbContext context, IUserAuthServices userAuthServices, IDistributedCache cache)
         {
             _genericRepository = genericRepository;
             _context = context;
             _userAuthServices = userAuthServices;
+            _cache = cache;
         }
 
         public async Task<Response<PostResponse>> CreateAsync(Post entity)
@@ -40,7 +35,9 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<PostResponse>.Failure("The Book Or User Not Found", 404);
 
             await _genericRepository.CreateAsync(entity);
-            return Response<PostResponse>.Success(BuildResponse(entity));
+            var response = BuildResponse(entity);
+            await _cache.SetRecordAsync(GetCacheKey(entity.Id), response);
+            return Response<PostResponse>.Success(response);
         }
 
         public async Task<Response<PostResponse>> DeleteAsync(Guid PostId)
@@ -53,15 +50,23 @@ namespace MyReadsApp.Infstructure.Services
                 return Response<PostResponse>.Failure("The User Not Authorize", 403);
 
             await _genericRepository.DeleteAsync(post);
+            await _cache.RemoveAsync(GetCacheKey(PostId));
             return Response<PostResponse>.Success(BuildResponse(post));
         }
 
         public async Task<Response<PostResponse>> GetAsync(Guid PostId)
         {
+            var cached = await _cache.GetRecordAsync<PostResponse>(GetCacheKey(PostId));
+            if (cached is not null)
+                return Response<PostResponse>.Success(cached);
+
             var post = await _context.Posts.FindAsync(PostId);
             if (post == null)
                 return Response<PostResponse>.Failure("The Post Not Found", 404);
-            return Response<PostResponse>.Success(BuildResponse(post));
+
+            var response = BuildResponse(post);
+            await _cache.SetRecordAsync(GetCacheKey(PostId), response);
+            return Response<PostResponse>.Success(response);
         }
 
         public async Task<Response<PostResponse>> UpdateAsync(Guid PostId, Post NewEntity)
@@ -80,8 +85,12 @@ namespace MyReadsApp.Infstructure.Services
             post.UpdatedAt = NewEntity.UpdatedAt;
 
             await _genericRepository.UpdateAsync(post);
-            return Response<PostResponse>.Success(BuildResponse(post));
+            var response = BuildResponse(post);
+            await _cache.SetRecordAsync(GetCacheKey(PostId), response);
+            return Response<PostResponse>.Success(response);
         }
+
+        private static string GetCacheKey(Guid id) => $"Post:{id}";
 
         private static PostResponse BuildResponse(Post entity)
         {
