@@ -151,6 +151,8 @@ namespace MyReadsApp.Infstructure
             services.AddScoped<ILikeServices, LikeServices>();
             services.AddScoped<IUserfollowServices, UserfollowServices>();
             services.AddScoped<IFriendshipServices, FriendshipServices>();
+            services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IFileStorage, FileStorageServices>();
             services.AddScoped<IJwtTokenServices, JwtTokenServices>();
             services.AddSingleton<IEmailservices, EmailServices>();
             return services;
