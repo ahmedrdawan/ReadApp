@@ -1,6 +1,6 @@
 # 📚 MyReadsApp API
 
-MyReadsApp is a layered **ASP.NET Core 8 Web API** for a social reading platform. It supports authentication, role-based authorization, book/author management, posting, comments, likes, favorites, shelves (user books), following, and friendships.
+MyReadsApp is a layered **ASP.NET Core 8 Web API** for a social reading platform. It supports authentication, role-based authorization, book/author management, posting, comments, likes, favorites, shelves (user books), following, friendships, and Google sign-in.
 
 ---
 
@@ -58,7 +58,9 @@ Backend/MyReadsApp/
 
 - .NET SDK 8.0+
 - SQL Server instance
+- (Optional) Redis instance for distributed caching (`localhost:6379` by default)
 - (Optional) SendGrid API key for email confirmation delivery
+- (Optional) Google OAuth credentials for external login
 
 ---
 
@@ -74,17 +76,29 @@ Main configuration lives in:
 ```json
 {
   "ConnectionStrings": {
-    "default": "<sql-server-connection-string>"
+    "default": "<sql-server-connection-string>",
+    "redis": "localhost:6379"
   },
   "JwtSettings": {
     "Key": "<strong-random-key>",
     "Issuer": "BookLibrary",
     "Audience": "BookLibraryClient",
-    "ExpiryInMinutes": 30
+    "ExpiryInMinutes": 30,
+    "RefreshTokenExpiration": 30
   },
-  "appURL": "http://localhost:<frontend-port>/",
-  "SenderGridApiKey": "<sendgrid-api-key>",
-  "SenderEmail": "<verified-sender-email>"
+  "BaseAppSetting": {
+    "appURL": "http://localhost:<frontend-port>/"
+  },
+  "GridSetting": {
+    "SenderGridApiKey": "<sendgrid-api-key>",
+    "SenderEmail": "<verified-sender-email>"
+  },
+  "Authentication": {
+    "Google": {
+      "ClientId": "<google-client-id>",
+      "ClientSecret": "<google-client-secret>"
+    }
+  }
 }
 ```
 
@@ -118,7 +132,7 @@ dotnet ef database update --project MyReadsApp.Infstructure --startup-project My
 dotnet run --project MyReadsApp.API
 ```
 
-By default, Swagger UI is enabled in Development.
+Swagger UI is available in Development at `/swagger` (for example, `https://localhost:7097/swagger`).
 
 ---
 
@@ -151,7 +165,10 @@ Base host example: `https://localhost:<port>`
 
 - `POST /api/Auth/Sign-Up`
 - `POST /api/Auth/Sign-In`
-- `GET /api/Auth/confirm-email?userId={userId}&code={code}`
+- `POST /api/Auth/refresh-token`
+- `GET /api/Auth/google-login`
+- `GET /api/Auth/google-callback`
+- `GET /api/Auth/confirm-email?userId={userId}&token={token}`
 
 ### Author (`/api/Author`) *(Admin)*
 
