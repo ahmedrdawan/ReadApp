@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Readify - Dashboard</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" data-nav></aside>
+    <main class="content">
+      <header class="topbar">
+        <input id="searchInput" type="search" placeholder="Search books, authors, genres..." />
+        <a class="btn secondary" href="./discover.html">Discover</a>
+        <button class="btn primary">+ Add Book</button>
+      </header>
+
+      <section class="hero card">
+        <div>
+          <p class="hero-tag">Today’s pick</p>
+          <h2>The Midnight Library</h2>
+          <p>Between life and death there is a library, and within that library, the shelves go on forever.</p>
+          <a class="btn primary" href="./book-details.html">Continue Reading</a>
+        </div>
+        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80" alt="Book" />
+      </section>
+
+      <section>
+        <div class="section-title-row"><h3>Recommended for you</h3></div>
+        <div id="bookGrid" class="book-grid"></div>
+      </section>
+    </main>
+  </div>
+  <script src="../script.js"></script>
+</body>
+</html>
