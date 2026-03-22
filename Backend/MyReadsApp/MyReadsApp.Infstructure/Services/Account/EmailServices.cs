@@ -1,47 +1,57 @@
-﻿using MyReadsApp.API.DTOs;
+﻿using Microsoft.Extensions.Options;
+using MyReadsApp.API.DTOs;
+using MyReadsApp.Core.AppSetting;
 using MyReadsApp.Core.Common;
 using MyReadsApp.Core.Entities.Identity;
 using MyReadsApp.Core.Services.Interfaces.Account;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.OLE.Interop;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using System.Text;
+using System.Net;
+using System.Net.Mail;
 using Response = MyReadsApp.Core.Common.Response;
-using MyReadsApp.Core.AppSetting;
 
 namespace MyReadsApp.Infstructure.Services
 {
     public class EmailServices : IEmailservices
     {
-        private readonly IConfiguration _config;
-        private readonly UserManager<User> _userManager;
-        private readonly GridSetting _gridSetting;
+        private readonly StmpSetting _stmpSetting;
 
-        public EmailServices(IConfiguration config, UserManager<User> userManager, GridSetting gridSetting)
+        public EmailServices(IOptions<StmpSetting> stmpSetting)
         {
-            _config = config;
-            _userManager = userManager;
-            _gridSetting = gridSetting;
+            _stmpSetting = stmpSetting.Value ?? throw new ArgumentNullException(nameof(stmpSetting));
         }
 
-        
         public async Task<bool> SendEmailAsync(string toEmail, string subject, string content)
         {
-            var apiKey = _gridSetting.SenderGridApiKey;
-            var client = new SendGridClient(apiKey);
+            if (string.IsNullOrEmpty(_stmpSetting.SenderEmail))
+                throw new Exception("SenderEmail is NULL");
 
-            var from = new EmailAddress(_gridSetting.SenderEmail, "MyReadsApp");
-            var to = new EmailAddress(toEmail);
+            if (string.IsNullOrEmpty(toEmail))
+                throw new Exception("Receiver email is NULL");
+            try
+            {
+                using (var smtp = new SmtpClient(_stmpSetting.SmtpHost, _stmpSetting.SmtpPort))
+                {
+                    smtp.Credentials = new NetworkCredential(_stmpSetting.SenderEmail, _stmpSetting.SmtpPassword);
+                    smtp.EnableSsl = _stmpSetting.EnableSsl;
 
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, "", content);
+                    var mail = new MailMessage
+                    {
+                        From = new MailAddress(_stmpSetting.SenderEmail, "MyReadsApp"),
+                        Subject = subject,
+                        Body = content,
+                        IsBodyHtml = true
+                    };
 
-            var response = await client.SendEmailAsync(msg);
+                    mail.To.Add(toEmail);
 
-            return response.IsSuccessStatusCode;
+                    await smtp.SendMailAsync(mail);
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
-
 }

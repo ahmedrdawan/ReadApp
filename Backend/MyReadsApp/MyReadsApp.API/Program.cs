@@ -17,6 +17,16 @@ namespace MyReadsApp.API
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             builder.Services.AddControllers() 
                 .AddJsonOptions(options =>
                 {
@@ -57,6 +67,8 @@ namespace MyReadsApp.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowAll");
             app.UseMiddleware<ExceptionHandeler>();
             app.UseHttpLogging();
             app.UseStaticFiles();

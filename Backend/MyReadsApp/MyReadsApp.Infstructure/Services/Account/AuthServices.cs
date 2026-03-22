@@ -10,6 +10,7 @@ using MyReadsApp.Core.DTOs.Auth.Request;
 using MyReadsApp.Core.DTOs.Auth.Response;
 using MyReadsApp.Core.Entities.Identity;
 using MyReadsApp.Core.Services.Interfaces.Account;
+using Newtonsoft.Json.Linq;
 using System.Text;
 
 namespace MyReadsApp.Infstructure.Services
@@ -76,16 +77,17 @@ namespace MyReadsApp.Infstructure.Services
             var encodedToken = WebEncoders.Base64UrlEncode(
                 Encoding.UTF8.GetBytes(emailConfirmationToken)
             );
-            var confirmationLink = $"{_baseAppSetting.appURL}/confirm-email?userId={user.Id}&token={encodedToken}";
+            
             var isSend = await _emailservices.SendEmailAsync(
                 user.Email,
                 "Confirm your email",
-                $@" <h3>Email Confirmation</h3>
-                    <p>Please confirm your email by clicking the link below:</p>
-                    <a href='{confirmationLink}'>Confirm Email</a>
-                    "
+                $@"
+                <h3>Email Confirmation</h3>
+                <p>confirm your email:</p>
+                <p>{encodedToken}</p>
+                <p>This link expires in 10 minutes.</p>
+                "
             );
-
             if (!isSend)
                 return Response<AuthResponse>.Failure("Failed to send confirmation email.", 500);
 
@@ -143,22 +145,33 @@ namespace MyReadsApp.Infstructure.Services
             return Response<AuthResponse>.Success(response);
         }
 
-        
-        public async Task<Response> ConfirmEmailAsync(Guid userId, string token)
+
+        public async Task<Response> ConfirmEmailAsync(string email, string token)
         {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
                 return Response.Failure("User not found", 404);
 
-            token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            try
+            {
+                var decodedToken = Encoding.UTF8.GetString(
+                    WebEncoders.Base64UrlDecode(token)
+                );
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+                var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
 
-            if (!result.Succeeded)
-                return Response.Failure("Email confirmation failed", 400);
+                if (!result.Succeeded)
+                    return Response.Failure(
+                        result.Errors.Select(e => e.Description).ToList(), 400
+                    );
 
-            return Response.Success();
+                return Response.Success();
+            }
+            catch
+            {
+                return Response.Failure("Invalid token format", 400);
+            }
         }
 
 
@@ -221,6 +234,44 @@ namespace MyReadsApp.Infstructure.Services
                 new TokenResult(
                     tokenResult.Token,
                     tokenResult.ExpiresAt));
+        }
+
+        public async Task<Response> ForgotPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return Response.Failure("User not found", 404);
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var isSend = await _emailservices.SendEmailAsync(
+                email,
+                "Reset your Password",
+                $@"
+                <h3>eset your Password</h3>
+                <p>eset your Password code is:</p>
+                <h1 style='color:blue'>{encodedToken}</h1>
+                <p>This code expires in 10 minutes.</p>
+                "
+            );
+
+            return Response.Success();
+        }
+
+        public async Task<Response> ResetPasswordAsync(ResetPasswordDtos request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user == null)
+                return Response.Failure("User not found", 404);
+
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, request.NewPassword);
+
+            if (!result.Succeeded)
+                return Response.Failure("Reset failed");
+
+            return Response.Success();
         }
 
         #endregion

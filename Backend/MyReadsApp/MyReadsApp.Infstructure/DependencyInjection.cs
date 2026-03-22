@@ -90,6 +90,8 @@ namespace MyReadsApp.Infstructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.Configure<StmpSetting>(
+                configuration.GetSection("SmtpSetting"));
             var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>()
                 ?? throw new InvalidOperationException("JwtSettings section missing.");
 

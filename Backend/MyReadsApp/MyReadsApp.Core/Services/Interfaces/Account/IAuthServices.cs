@@ -1,4 +1,5 @@
-﻿using MyReadsApp.Core.Common;
+﻿
+using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.Auth.Request;
 using MyReadsApp.Core.DTOs.Auth.Response;
 using System;
@@ -13,7 +14,9 @@ namespace MyReadsApp.Core.Services.Interfaces.Account
     {
         Task<Response<AuthResponse>> RegisterAsync(RegisterRequest request);
         Task<Response<AuthResponse>> LoginAsync(LoginRequest request);
-        Task<Response> ConfirmEmailAsync(Guid userId, string token);
+        Task<Response> ConfirmEmailAsync(string email, string token);
         Task<Response<AuthResponse>> GoogleLoginAsync(string email, string? name);
+        Task<Response> ForgotPasswordAsync(string email);
+        Task<Response> ResetPasswordAsync(ResetPasswordDtos request);
     }
 }

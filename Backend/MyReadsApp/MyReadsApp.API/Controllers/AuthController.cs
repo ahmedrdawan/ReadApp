@@ -1,13 +1,14 @@
-﻿using MyReadsApp.API.DTOs;
-using MyReadsApp.API.DTOs.Account;
-using MyReadsApp.Core.DTOs.Auth.Request;
-using MyReadsApp.Core.Services.Interfaces.Account;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MyReadsApp.Infstructure.Services;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MyReadsApp.API.DTOs.Account;
+using MyReadsApp.API.Extentions;
+using MyReadsApp.Core.Common;
+using MyReadsApp.Core.DTOs.Auth.Request;
+using MyReadsApp.Core.DTOs.Auth.Response;
+using MyReadsApp.Core.Services.Interfaces.Account;
+using System.Security.Claims;
 
 namespace MyReadsApp.API.Controllers
 {
@@ -18,9 +19,9 @@ namespace MyReadsApp.API.Controllers
 
         private readonly IAuthServices _authServices;
         private readonly IConfiguration _Configration;
-        private readonly JwtTokenServices _jwtTokenServices;
+        private readonly IJwtTokenServices _jwtTokenServices;
 
-        public AuthController(IAuthServices authServices, IConfiguration configration, JwtTokenServices jwtTokenServices)
+        public AuthController(IAuthServices authServices, IConfiguration configration, IJwtTokenServices jwtTokenServices)
         {
             _authServices = authServices;
             _Configration = configration;
@@ -30,13 +31,14 @@ namespace MyReadsApp.API.Controllers
         [HttpPost("Sign-Up")]
         public async Task<IActionResult> Register([FromBody] SignUpDtos request)
         {
-            var result = await _authServices.RegisterAsync(new RegisterRequest
+            Response<AuthResponse> result = await _authServices.RegisterAsync(new RegisterRequest
             {
                 UserName = request.UserName,
                 Email = request.Email,
                 Password = request.Password,
             });
-            return StatusCode(result.StatusCode, result);
+
+            return this.ActionResult(result.StatusCode, result);
         }
 
         [HttpPost("Sign-In")]
@@ -48,24 +50,50 @@ namespace MyReadsApp.API.Controllers
                 Password = request.Password,
             });
 
-            return StatusCode(result.StatusCode, result);
+            return this.ActionResult(result.StatusCode, result);
         }
         [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] Guid userId, [FromQuery]string token)
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string email, [FromQuery]string token)
         {
             if (string.IsNullOrEmpty(token))
                 return BadRequest("Invalid email confirmation request.");
 
-            var result = await _authServices.ConfirmEmailAsync(userId, token);
-            return StatusCode(result.StatusCode, result);
+            var result = await _authServices.ConfirmEmailAsync(email, token);
+            
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return NoContent();
         }
 
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDtos request)
+        {
+            var result = await _authServices.ForgotPasswordAsync(request.Email);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return NoContent();
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDtos request)
+        {
+            var result = await _authServices.ResetPasswordAsync(new ResetPasswordDtos
+            (
+                request.Email,
+                 request.Token,
+                request.NewPassword
+            ));
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return NoContent();
+        }
+        [Authorize]
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken()
         {
             var result = await _jwtTokenServices.RefreshTokenAsync();
-            return StatusCode(result.StatusCode, result);
+            return this.ActionResult(result.StatusCode, result);
         }
 
         #region External Login
@@ -93,7 +121,7 @@ namespace MyReadsApp.API.Controllers
                 return BadRequest("Google login did not provide an email.");
 
             var response = await _authServices.GoogleLoginAsync(email, name);
-            return StatusCode(response.StatusCode, response);
+            return this.ActionResult(response.StatusCode, response);
         }
         #endregion
     }
