@@ -4,6 +4,26 @@ MyReadsApp is a layered **ASP.NET Core 8 Web API** for a social reading platform
 
 ---
 
+## 📑 Table of Contents
+
+- [✨ Features](#-features)
+- [🧱 Solution Structure](#-solution-structure)
+- [⚙️ Tech Stack](#️-tech-stack)
+- [📋 Requirements](#-requirements)
+- [🔧 Configuration](#-configuration)
+- [🚀 Getting Started](#-getting-started)
+- [🔐 Authentication \& Authorization](#-authentication--authorization)
+- [📘 API Endpoints (Current Routes)](#-api-endpoints-current-routes)
+- [🧰 Common Response Pattern](#-common-response-pattern)
+- [🧯 Error Handling](#-error-handling)
+- [🗃️ Database \& Migrations](#️-database--migrations)
+- [🧪 Testing](#-testing)
+- [🔎 Quick Validation Commands](#-quick-validation-commands)
+- [🤝 Contributing](#-contributing)
+- [📝 Notes](#-notes)
+
+---
+
 ## ✨ Features
 
 - **Authentication & Identity**
@@ -295,6 +315,18 @@ Recommended next steps:
 1. Add unit tests for service layer logic.
 2. Add integration tests for auth + protected endpoints.
 3. Add CI pipeline for restore/build/test.
+
+---
+
+## 🔎 Quick Validation Commands
+
+From `Backend/MyReadsApp`, these are useful sanity checks before opening a PR:
+
+```bash
+dotnet restore MyReadsApp.sln
+dotnet build MyReadsApp.sln
+dotnet run --project MyReadsApp.API
+```
 
 ---
 
