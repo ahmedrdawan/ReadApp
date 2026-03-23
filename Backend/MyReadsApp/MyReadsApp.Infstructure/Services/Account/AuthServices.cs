@@ -266,11 +266,31 @@ namespace MyReadsApp.Infstructure.Services
                 return Response.Failure("User not found", 404);
 
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+
             var result = await _userManager.ResetPasswordAsync(user, decodedToken, request.NewPassword);
 
             if (!result.Succeeded)
                 return Response.Failure("Reset failed");
 
+            return Response.Success();
+        }
+
+        public async Task<Response> VerfiyReseTokenAsync(VerfyResetTokenDtos request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+                return Response.Failure("User not found", 404);
+
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+
+            var result = await _userManager.VerifyUserTokenAsync(
+                user,
+                _userManager.Options.Tokens.PasswordResetTokenProvider,
+                "ResetPassword",
+                decodedToken);
+
+            if (!result)
+                return Response.Failure("Invalid or expired token", 400);
             return Response.Success();
         }
 

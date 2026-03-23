@@ -18,5 +18,6 @@ namespace MyReadsApp.Core.Services.Interfaces.Account
         Task<Response<AuthResponse>> GoogleLoginAsync(string email, string? name);
         Task<Response> ForgotPasswordAsync(string email);
         Task<Response> ResetPasswordAsync(ResetPasswordDtos request);
+        Task<Response> VerfiyReseTokenAsync(VerfyResetTokenDtos request);
     }
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyReadsApp.Infstructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+439cc0c4843496e83f90f8671d7210c745019cf7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+78ca778946336b200b13d71f14de0462159e9d8e")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyReadsApp.Infstructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyReadsApp.Infstructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

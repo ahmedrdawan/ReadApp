@@ -62,7 +62,7 @@ namespace MyReadsApp.API.Controllers
             
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return NoContent();
+            return this.ActionResult(result.StatusCode, result);
         }
 
 
@@ -72,7 +72,22 @@ namespace MyReadsApp.API.Controllers
             var result = await _authServices.ForgotPasswordAsync(request.Email);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return NoContent();
+            return this.ActionResult(result.StatusCode, result);
+        }
+
+        [HttpGet("Verify-reset-token")]
+        public async Task<IActionResult> VerifyResetToken([FromQuery] string email, [FromQuery] string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Invalid password reset token.");
+            var result = await _authServices.VerfiyReseTokenAsync(new VerfyResetTokenDtos
+            (
+                email,
+                token
+            ));
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return this.ActionResult(result.StatusCode, result);
         }
 
         [HttpPost("reset-password")]
@@ -81,12 +96,12 @@ namespace MyReadsApp.API.Controllers
             var result = await _authServices.ResetPasswordAsync(new ResetPasswordDtos
             (
                 request.Email,
-                 request.Token,
+                request.Token,
                 request.NewPassword
             ));
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return NoContent();
+            return this.ActionResult(result.StatusCode, result);
         }
         [Authorize]
         [HttpPost("refresh-token")]
