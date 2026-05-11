@@ -82,5 +82,13 @@ namespace MyReadsApp.API.Controllers
                 return BadRequest(result);
             return NoContent();
         }
+
+        [HttpGet("Post/{PostId}/Comments")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetComments(Guid PostId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            var res = await _commentServises.GetListAsync(PostId, pageNumber, pageSize);
+            return StatusCode(res.StatusCode, res);
+        }
     }
 }

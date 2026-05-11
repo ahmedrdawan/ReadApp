@@ -17,5 +17,6 @@ namespace MyReadsApp.Core.Services.Interfaces
         Task<Response<PostResponse>> DeleteAsync(Guid PostId);
         Task<Response<PostResponse>> UpdateAsync(Guid PostId, Post newPost);
         Task<Response<PostResponse>> GetAsync(Guid PostId);
+        Task<Response<MyReadsApp.Core.Common.PagedResult<MyReadsApp.Core.DTOs.Post.Response.PostFeedItem>>> GetFeedAsync(int pageNumber = 1, int pageSize = 10, Guid? currentUserId = null);
     }
 }

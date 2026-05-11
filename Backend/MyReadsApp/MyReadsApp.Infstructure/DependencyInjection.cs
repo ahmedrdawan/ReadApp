@@ -9,6 +9,7 @@ using MyReadsApp.Core.Entities.Identity;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Core.Services.Interfaces.Account;
+using MyReadsApp.Infrastructure.Services;
 using MyReadsApp.Infstructure.Data;
 using MyReadsApp.Infstructure.Services;
 using MyReadsApp.Infstructure.Services.Account;
@@ -91,8 +92,8 @@ namespace MyReadsApp.Infstructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<StmpSetting>(
-                configuration.GetSection("SmtpSetting"));
+            services.Configure<SmtpSettings>(
+                configuration.GetSection("SmtpSettings"));
             var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>()
                 ?? throw new InvalidOperationException("JwtSettings section missing.");
 
@@ -157,7 +158,8 @@ namespace MyReadsApp.Infstructure
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IFileStorage, FileStorageServices>();
             services.AddScoped<IJwtTokenServices, JwtTokenServices>();
-            services.AddSingleton<IEmailservices, EmailServices>();
+            services.AddScoped<MyReadsApp.Core.Services.Interfaces.ICategoryServices, MyReadsApp.Infstructure.Services.CategoryServices>();
+            services.AddSingleton<IEmailService, EmailService>();
             return services;
         }
 

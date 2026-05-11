@@ -47,7 +47,7 @@ namespace MyReadsApp.Infstructure.Services
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
-                return Response<UserProfileResponse>.Failure(result.Errors.Select(e => e.Description).ToList(), 400);
+                return Response<UserProfileResponse>.Failure(result.Errors.Select(e => e.Description).FirstOrDefault() ?? "User update failed.", 400);
 
             return Response<UserProfileResponse>.Success(BuildUserProfileResponse(user));
         }
@@ -61,7 +61,7 @@ namespace MyReadsApp.Infstructure.Services
 
             var uploadedFile = await _fileStorage.UploadAsync(request);
             if (!uploadedFile.IsSuccess || string.IsNullOrWhiteSpace(uploadedFile.Value))
-                return Response<UserProfileResponse>.Failure(uploadedFile.Errors, uploadedFile.StatusCode);
+                return Response<UserProfileResponse>.Failure(uploadedFile.Message ?? "File upload failed.", uploadedFile.StatusCode);
 
             var oldImage = user.UserImage;
             user.UserImage = uploadedFile.Value;
@@ -70,7 +70,7 @@ namespace MyReadsApp.Infstructure.Services
             if (!updateResult.Succeeded)
             {
                 await _fileStorage.DeleteAsync(uploadedFile.Value);
-                return Response<UserProfileResponse>.Failure(updateResult.Errors.Select(e => e.Description).ToList(), 400);
+                return Response<UserProfileResponse>.Failure(updateResult.Errors.Select(e => e.Description).FirstOrDefault() ?? "User update failed.", 400);
             }
 
             if (!string.IsNullOrWhiteSpace(oldImage))
@@ -97,7 +97,7 @@ namespace MyReadsApp.Infstructure.Services
             if (!updateResult.Succeeded)
             {
                 user.UserImage = currentImage;
-                return Response<UserProfileResponse>.Failure(updateResult.Errors.Select(e => e.Description).ToList(), 400);
+                return Response<UserProfileResponse>.Failure(updateResult.Errors.Select(e => e.Description).FirstOrDefault() ?? "User update failed.", 400);
             }
 
             await _fileStorage.DeleteAsync(currentImage);

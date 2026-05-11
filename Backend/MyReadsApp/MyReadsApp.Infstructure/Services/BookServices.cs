@@ -37,7 +37,7 @@ namespace MyReadsApp.Infstructure.Services
 
             await _genericRepository.CreateAsync(entity);
 
-            var response = BuildResponse(entity);
+            var response = BuildResponse(entity, author?.AuthorName);
             await _cache.SetRecordAsync(GetCacheKey(entity.Id), response);
 
             return Response<BookAuthorResponse>.Success(response);
@@ -51,7 +51,8 @@ namespace MyReadsApp.Infstructure.Services
 
             await _genericRepository.DeleteAsync(book);
             await _cache.RemoveAsync(GetCacheKey(BookId));
-            return Response<BookAuthorResponse>.Success(BuildResponse(book));
+            var author = await _context.Authors.FindAsync(book.AuthorId);
+            return Response<BookAuthorResponse>.Success(BuildResponse(book, author?.AuthorName));
         }
 
         public async Task<Response<BookAuthorResponse>> GetAsync(Guid BookId)
@@ -65,7 +66,8 @@ namespace MyReadsApp.Infstructure.Services
             if (book == null)
                 return Response<BookAuthorResponse>.Failure("The Book Not Found", 404);
 
-            var response = BuildResponse(book);
+            var author = await _context.Authors.FindAsync(book.AuthorId);
+            var response = BuildResponse(book, author?.AuthorName);
             await _cache.SetRecordAsync(cacheKey, response);
             return Response<BookAuthorResponse>.Success(response);
         }
@@ -91,14 +93,125 @@ namespace MyReadsApp.Infstructure.Services
             entity.AuthorId = newEntity.AuthorId;
 
             await _genericRepository.UpdateAsync(entity);
-            var response = BuildResponse(entity);
+            var author = await _context.Authors.FindAsync(entity.AuthorId);
+            var response = BuildResponse(entity, author?.AuthorName);
             await _cache.SetRecordAsync(GetCacheKey(id), response);
             return Response<BookAuthorResponse>.Success(response);
         }
 
         private static string GetCacheKey(Guid id) => $"Book:{id}";
 
-        private static BookAuthorResponse BuildResponse(Book entity)
+        public async Task<Response<MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>>> GetListAsync(int pageNumber = 1, int pageSize = 10, Guid? categoryId = null)
+        {
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            var query = _context.Books.AsQueryable();
+            if (categoryId.HasValue)
+            {
+                query = query.Where(b => _context.BookCategories.Any(bc => bc.BookId == b.Id && bc.CategoryId == categoryId.Value));
+            }
+
+            var total = await query.LongCountAsync();
+            var books = await query.OrderByDescending(b => b.Title).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var items = new List<BookAuthorResponse>();
+            foreach (var book in books)
+            {
+                var author = await _context.Authors.FindAsync(book.AuthorId);
+                items.Add(BuildResponse(book, author?.AuthorName));
+            }
+
+            var paged = new MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = total
+            };
+
+            return Response<MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>>.Success(paged);
+        }
+
+        public async Task<Response<MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>>> SearchAsync(string query, int pageNumber = 1, int pageSize = 10, Guid? categoryId = null)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return await GetListAsync(pageNumber, pageSize, categoryId);
+
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            var q = _context.Books.Where(b => b.Title.Contains(query) || (b.Description != null && b.Description.Contains(query)));
+            if (categoryId.HasValue)
+                q = q.Where(b => _context.BookCategories.Any(bc => bc.BookId == b.Id && bc.CategoryId == categoryId.Value));
+
+            var total = await q.LongCountAsync();
+            var books = await q.OrderByDescending(b => b.Title).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var items = new List<BookAuthorResponse>();
+            foreach (var book in books)
+            {
+                var author = await _context.Authors.FindAsync(book.AuthorId);
+                items.Add(BuildResponse(book, author?.AuthorName));
+            }
+
+            var paged = new MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = total
+            };
+
+            return Response<MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>>.Success(paged);
+        }
+
+        public async Task<Response<object>> RateBookAsync(Guid bookId, Guid userId, int value)
+        {
+            if (value < 1 || value > 5)
+                return Response<object>.Failure("Rating value must be between 1 and 5", 400);
+
+            var book = await _context.Books.FindAsync(bookId);
+            if (book == null)
+                return Response<object>.Failure("The Book Not Found", 404);
+
+            var existing = await _context.BookRatings.FirstOrDefaultAsync(r => r.BookId == bookId && r.UserId == userId);
+            if (existing != null)
+            {
+                existing.Value = value;
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                var rating = new BookRating { Id = Guid.NewGuid(), BookId = bookId, UserId = userId, Value = value, CreatedAt = DateTime.UtcNow };
+                await _context.BookRatings.AddAsync(rating);
+                await _context.SaveChangesAsync();
+            }
+
+            return Response<object>.Success(null, 200);
+        }
+
+        public async Task<Response<object>> GetRatingSummaryAsync(Guid bookId, Guid? userId = null)
+        {
+            var book = await _context.Books.FindAsync(bookId);
+            if (book == null)
+                return Response<object>.Failure("The Book Not Found", 404);
+
+            var ratings = _context.BookRatings.Where(r => r.BookId == bookId);
+            var total = await ratings.LongCountAsync();
+            var average = total == 0 ? 0 : await ratings.AverageAsync(r => r.Value);
+            int? userValue = null;
+            if (userId.HasValue)
+            {
+                var u = await ratings.FirstOrDefaultAsync(r => r.UserId == userId.Value);
+                if (u != null) userValue = u.Value;
+            }
+
+            var resp = new { average, count = total, userValue };
+            return Response<object>.Success(resp);
+        }
+
+        private static BookAuthorResponse BuildResponse(Book entity, string? authorName)
         {
             return new BookAuthorResponse
             {
@@ -106,7 +219,8 @@ namespace MyReadsApp.Infstructure.Services
                 BookImage = entity.BookImage,
                 Description = entity.Description,
                 AuthorId = entity.AuthorId,
-                Title = entity.Title
+                Title = entity.Title,
+                AuthorName = authorName
             };
         }
     }

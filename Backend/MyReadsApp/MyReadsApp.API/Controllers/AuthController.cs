@@ -2,56 +2,81 @@
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyReadsApp.API.DTOs.Account;
+using MyReadsApp.API.DTOs.Auth.Request;
 using MyReadsApp.API.Extentions;
-using MyReadsApp.Core.Common;
-using MyReadsApp.Core.DTOs.Auth.Request;
-using MyReadsApp.Core.DTOs.Auth.Response;
+using MyReadsApp.Core.DTOs.Auth;
 using MyReadsApp.Core.Services.Interfaces.Account;
 using System.Security.Claims;
 
 namespace MyReadsApp.API.Controllers
 {
+
+    /// <summary>
+    /// Handles authentication-related endpoints including registration, login,
+    /// email confirmation, password reset, refresh token, and external login (Google).
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
 
         private readonly IAuthServices _authServices;
-        private readonly IConfiguration _Configration;
-        private readonly IJwtTokenServices _jwtTokenServices;
 
-        public AuthController(IAuthServices authServices, IConfiguration configration, IJwtTokenServices jwtTokenServices)
+        public AuthController(IAuthServices authServices)
         {
             _authServices = authServices;
-            _Configration = configration;
-            _jwtTokenServices = jwtTokenServices;
         }
 
+
+        /// <summary>
+        /// Registers a new user account.
+        /// </summary>
+        /// <param name="request">User registration data (username, email, password).</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of registration.
+        /// </returns>
         [HttpPost("Sign-Up")]
-        public async Task<IActionResult> Register([FromBody] SignUpDtos request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
-            Response<AuthResponse> result = await _authServices.RegisterAsync(new RegisterRequest
-            {
-                UserName = request.UserName,
-                Email = request.Email,
-                Password = request.Password,
-            });
+            var result = await _authServices.RegisterAsync(new RegisterDto
+            (
+                request.UserName,
+                request.Email,
+                request.Password
+            ));
 
-            return this.ActionResult(result.StatusCode, result);
+            return StatusCode(result.StatusCode, result);
         }
 
+
+        /// <summary>
+        /// Authenticates a user and returns JWT + refresh token.
+        /// </summary>
+        /// <param name="request">Login credentials (email and password).</param>
+        /// <returns>
+        /// HTTP response containing authentication result or error.
+        /// </returns>
         [HttpPost("Sign-In")]
-        public async Task<IActionResult> Login([FromBody] SignInDtos request)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            var result = await _authServices.LoginAsync(new LoginRequest
-            {
-                Email = request.Email,
-                Password = request.Password,
-            });
+            var result = await _authServices.LoginAsync(new LoginDto
+            (
+                request.Email,
+                request.Password
+            ));
 
-            return this.ActionResult(result.StatusCode, result);
+            return StatusCode(result.StatusCode, result);
         }
+
+
+        /// <summary>
+        /// Confirms a user's email address using a verification token.
+        /// </summary>
+        /// <param name="email">User email address.</param>
+        /// <param name="token">Email confirmation token.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of email confirmation.
+        /// </returns>
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string email, [FromQuery]string token)
         {
@@ -60,40 +85,40 @@ namespace MyReadsApp.API.Controllers
 
             var result = await _authServices.ConfirmEmailAsync(email, token);
             
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return this.ActionResult(result.StatusCode, result);
+            return StatusCode(result.StatusCode, result);
         }
 
 
+
+        /// <summary>
+        /// Sends a password reset token to the user's email.
+        /// </summary>
+        /// <param name="email">User email address.</param>
+        /// <returns>
+        /// HTTP response indicating whether reset email was sent.
+        /// </returns>
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDtos request)
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
-            var result = await _authServices.ForgotPasswordAsync(request.Email);
+            var result = await _authServices.ForgotPasswordAsync(email);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return this.ActionResult(result.StatusCode, result);
+            return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("Verify-reset-token")]
-        public async Task<IActionResult> VerifyResetToken([FromQuery] string email, [FromQuery] string token)
-        {
-            if (string.IsNullOrEmpty(token))
-                return BadRequest("Invalid password reset token.");
-            var result = await _authServices.VerfiyReseTokenAsync(new VerfyResetTokenDtos
-            (
-                email,
-                token
-            ));
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return this.ActionResult(result.StatusCode, result);
-        }
 
+        /// <summary>
+        /// Resets user password using a valid reset token.
+        /// </summary>
+        /// <param name="request">Reset password data (email, token, new password).</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of password reset.
+        /// </returns>
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDtos request)
+        public async Task<IActionResult> ResetPassword([FromBody] API.DTOs.
+            Auth.Request.ResetPasswordDto request)
         {
-            var result = await _authServices.ResetPasswordAsync(new ResetPasswordDtos
+            var result = await _authServices.ResetPasswordAsync(new Core.DTOs.Auth.ResetPasswordDto
             (
                 request.Email,
                 request.Token,
@@ -101,17 +126,33 @@ namespace MyReadsApp.API.Controllers
             ));
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return this.ActionResult(result.StatusCode, result);
+            return StatusCode(result.StatusCode, result);
         }
+
+
+
+        /// <summary>
+        /// Generates a new JWT using a valid refresh token stored in cookies.
+        /// </summary>
+        /// <returns>
+        /// HTTP response containing new authentication tokens.
+        /// </returns>
         [Authorize]
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken()
         {
-            var result = await _jwtTokenServices.RefreshTokenAsync();
-            return this.ActionResult(result.StatusCode, result);
+            var result = await _authServices.RefreshTokenAsync();
+            return StatusCode(result.StatusCode, result);
         }
 
         #region External Login
+
+        /// <summary>
+        /// Initiates Google authentication flow.
+        /// </summary>
+        /// <returns>
+        /// Redirects user to Google login page.
+        /// </returns>
         [HttpGet("google-login")]
         public IActionResult GoogleLogin()
         {
@@ -122,6 +163,13 @@ namespace MyReadsApp.API.Controllers
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
+
+        /// <summary>
+        /// Handles Google authentication callback and logs user into the system.
+        /// </summary>
+        /// <returns>
+        /// HTTP response containing authentication result or failure message.
+        /// </returns>
         [HttpGet("google-callback")]
         public async Task<IActionResult> GoogleCallback()
         {

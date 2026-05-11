@@ -7,6 +7,7 @@ using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Core.Services.Interfaces.Account;
 using MyReadsApp.Infstructure.Data;
 using MyReadsApp.Infstructure.Services.Cache;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyReadsApp.Infstructure.Services
 {
@@ -89,6 +90,27 @@ namespace MyReadsApp.Infstructure.Services
             var response = BuildResponse(comment);
             await _cache.SetRecordAsync(GetCacheKey(commentId), response);
             return Response<CommentResponse>.Success(response);
+        }
+
+        public async Task<Response<MyReadsApp.Core.Common.PagedResult<CommentResponse>>> GetListAsync(Guid postId, int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            var q = _context.Comments.Where(c => c.PostId == postId).OrderByDescending(c => c.CreatedAt);
+            var total = await q.LongCountAsync();
+            var items = await q.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var list = items.Select(BuildResponse).ToList();
+            var paged = new MyReadsApp.Core.Common.PagedResult<CommentResponse>
+            {
+                Items = list,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = total
+            };
+
+            return Response<MyReadsApp.Core.Common.PagedResult<CommentResponse>>.Success(paged);
         }
 
         private static string GetCacheKey(Guid id) => $"Comment:{id}";

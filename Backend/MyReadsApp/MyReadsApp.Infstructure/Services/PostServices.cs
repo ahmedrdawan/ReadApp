@@ -90,6 +90,81 @@ namespace MyReadsApp.Infstructure.Services
             return Response<PostResponse>.Success(response);
         }
 
+        public async Task<Response<MyReadsApp.Core.Common.PagedResult<MyReadsApp.Core.DTOs.Post.Response.PostFeedItem>>> GetFeedAsync(int pageNumber = 1, int pageSize = 10, Guid? currentUserId = null)
+        {
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            var query = _context.Posts.Include(p => p.Book).Include(p => p.User).AsQueryable();
+            var total = await query.LongCountAsync();
+
+            var posts = await query
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var items = new List<MyReadsApp.Core.DTOs.Post.Response.PostFeedItem>();
+            var postIds = posts.Select(p => p.Id).ToList();
+
+            var likes = await _context.Likes.Where(l => postIds.Contains(l.PostId)).ToListAsync();
+            var comments = await _context.Comments.Where(c => postIds.Contains(c.PostId)).ToListAsync();
+            var favorites = await _context.FaviorateBooks.Where(f => postIds.Contains(f.BookId)).ToListAsync();
+
+            foreach (var p in posts)
+            {
+                var likeCount = likes.Count(l => l.PostId == p.Id);
+                var commentCount = comments.Count(c => c.PostId == p.Id);
+                var isLiked = currentUserId.HasValue && likes.Any(l => l.PostId == p.Id && l.UserId == currentUserId.Value);
+                var isFavorited = currentUserId.HasValue && favorites.Any(f => f.BookId == p.BookId && f.UserId == currentUserId.Value);
+
+                var userResp = new MyReadsApp.Core.DTOs.User.Response.UserProfileResponse
+                {
+                    Id = p.User.Id,
+                    UserName = p.User.UserName,
+                    Email = p.User.Email,
+                    Country = p.User.Country,
+                    Gender = p.User.Gender,
+                    BirthDate = p.User.BirthDate,
+                    UserImage = p.User.UserImage
+                };
+
+                var bookResp = new MyReadsApp.Core.DTOs.Book.Response.BookAuthorResponse
+                {
+                    Id = p.Book.Id,
+                    Title = p.Book.Title,
+                    BookImage = p.Book.BookImage,
+                    Description = p.Book.Description,
+                    AuthorId = p.Book.AuthorId,
+                    AuthorName = p.Book.Author?.AuthorName
+                };
+
+                items.Add(new MyReadsApp.Core.DTOs.Post.Response.PostFeedItem
+                {
+                    Id = p.Id,
+                    User = userResp,
+                    Book = bookResp,
+                    CreatedAt = p.CreatedAt,
+                    Action = null,
+                    Rating = null,
+                    LikeCount = likeCount,
+                    CommentCount = commentCount,
+                    IsLikedByCurrentUser = isLiked,
+                    IsFavoritedByCurrentUser = isFavorited
+                });
+            }
+
+            var paged = new MyReadsApp.Core.Common.PagedResult<MyReadsApp.Core.DTOs.Post.Response.PostFeedItem>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = total
+            };
+
+            return Response<MyReadsApp.Core.Common.PagedResult<MyReadsApp.Core.DTOs.Post.Response.PostFeedItem>>.Success(paged);
+        }
+
         private static string GetCacheKey(Guid id) => $"Post:{id}";
 
         private static PostResponse BuildResponse(Post entity)

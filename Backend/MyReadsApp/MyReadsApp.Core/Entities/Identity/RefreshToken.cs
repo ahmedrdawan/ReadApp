@@ -10,12 +10,24 @@ namespace MyReadsApp.Core.Entities.Identity
     public class RefreshToken
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; } 
+
         public string Token { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
         public DateTime ExpireAt { get; set; }
-        public bool IsActive => DateTime.UtcNow < ExpireAt;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public DateTime? RevokedAt { get; set; }
+
+        public bool IsRevoked => RevokedAt != null;
+
+        public bool IsExpired => DateTime.UtcNow >= ExpireAt;
+
+        public bool IsActive => !IsRevoked && !IsExpired;
+
         public Guid UserId { get; set; }
-        public User User { get; set; } 
+
+        public User User { get; set; }
     }
 }

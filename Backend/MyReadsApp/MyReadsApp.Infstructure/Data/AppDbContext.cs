@@ -14,6 +14,9 @@ namespace MyReadsApp.Infstructure.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<BookRating> BookRatings { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<BookCategory> BookCategories { get; set; }
         public DbSet<UserFollow> UserFollows { get; set; }
         public DbSet<FriendShip> FriendShips { get; set; }
         public DbSet<FaviorateBook> FaviorateBooks { get; set; }

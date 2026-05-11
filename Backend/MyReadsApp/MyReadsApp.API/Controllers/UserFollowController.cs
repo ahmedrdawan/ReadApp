@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Services.Interfaces;
 using MyReadsApp.Core.Services.Interfaces.Account;
 
 namespace MyReadsApp.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserFollowController : ControllerBase

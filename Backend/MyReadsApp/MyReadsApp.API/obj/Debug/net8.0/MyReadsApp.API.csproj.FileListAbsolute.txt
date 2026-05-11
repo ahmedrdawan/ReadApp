@@ -162,10 +162,10 @@ C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\swae.build.ex.cache
-C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\MyReadsA.BD13CE8D.Up2Date
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\MyReadsApp.API.dll
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\refint\MyReadsApp.API.dll
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\MyReadsApp.API.pdb
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\MyReadsApp.API.genruntimeconfig.cache
 C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\ref\MyReadsApp.API.dll
+C:\Users\Elbrine\Desktop\ReadApp\Backend\MyReadsApp\MyReadsApp.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

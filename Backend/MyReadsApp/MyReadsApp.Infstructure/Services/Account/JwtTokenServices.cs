@@ -16,6 +16,10 @@ using System.Text;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Provides JWT and refresh token generation, validation, and cookie management.
+    /// Responsible for authentication token lifecycle in the application.
+    /// </summary>
     public class JwtTokenServices : IJwtTokenServices
     {
         private readonly JwtSettings _jwtSettings;
@@ -29,47 +33,15 @@ namespace MyReadsApp.Infstructure.Services
             _userManager = userManager;
         }
 
-        public async Task<Response<RefreshTokenResponse>> RefreshTokenAsync()
-        {
-            string? refreshTokenValue = await GetRefreshTokenFromCookies();
 
-            if (refreshTokenValue == null)
-                return Response<RefreshTokenResponse>.Failure("Refresh token not found.", 401);
-
-            var storedToken = await _userManager.Users
-                .SelectMany(u => u.RefreshTokens)
-                .FirstOrDefaultAsync(t => t.Token == refreshTokenValue);
-
-            if (storedToken == null || !storedToken.IsActive)
-                return Response<RefreshTokenResponse>.Failure("Invalid refresh token.", 401);
-
-            var user = await _userManager.FindByIdAsync(storedToken.UserId.ToString());
-
-            if (user == null)
-                return Response<RefreshTokenResponse>.Failure("User not found.", 404);
-
-            storedToken.CreatedAt = DateTime.UtcNow;
-
-            var newRefreshToken = await GenerateRefreshTokenAsync();
-
-            user.RefreshTokens.Add(newRefreshToken);
-
-            await _userManager.UpdateAsync(user);
-
-            await SetRefreshTokenInCookies(
-                newRefreshToken.Token,
-                newRefreshToken.ExpireAt
-            );
-
-            var newJwt = await GenerateJwtTokenAsync(user);
-
-            var response = new RefreshTokenResponse(newRefreshToken.Token, newRefreshToken.ExpireAt);
-
-            return Response<RefreshTokenResponse>.Success(response);
-        }
-
-
-        public Task<TokenResult> GenerateJwtTokenAsync(User user)
+        /// <summary>
+        /// Generates a signed JWT token for an authenticated user.
+        /// </summary>
+        /// <param name="user">Authenticated user entity.</param>
+        /// <returns>
+        /// JWT token string and expiration date.
+        /// </returns>
+        public async Task<TokenDto> GenerateJwtTokenAsync(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -94,52 +66,97 @@ namespace MyReadsApp.Infstructure.Services
 
             string jwtString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return Task.FromResult(new TokenResult(jwtString, expiresAt));
+            return new TokenDto(jwtString, expiresAt);
         }
 
+
+        /// <summary>
+        /// Generates a secure refresh token using cryptographically strong random bytes.
+        /// The token is hashed before being stored in the database.
+        /// </summary>
+        /// <returns>
+        /// A hashed refresh token with expiration and creation time.
+        /// </returns>
         public async Task<RefreshToken> GenerateRefreshTokenAsync()
         {
             var randomNumber = new byte[32];
+
             using var generator = RandomNumberGenerator.Create();
             generator.GetBytes(randomNumber);
 
+            var token = Convert.ToBase64String(randomNumber);
+
             return new RefreshToken
             {
-                Token = Convert.ToBase64String(randomNumber),
+                Token = HashToken(token), 
                 ExpireAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpiration),
                 CreatedAt = DateTime.UtcNow
             };
         }
 
-        public Task SetRefreshTokenInCookies(string Token, DateTime ExpireAt)
+
+        /// <summary>
+        /// Stores the refresh token in an HTTP-only secure cookie.
+        /// </summary>
+        /// <param name="token">Raw refresh token value.</param>
+        /// <param name="expireAt">Expiration date of the cookie.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when HttpContext is not available.
+        /// </exception>
+        public async Task SetRefreshTokenInCookies(string token, DateTime expireAt)
         {
-            if (string.IsNullOrEmpty(Token))
-                throw new ArgumentException("Token cannot be null or empty.", nameof(Token));
+            var context = _httpContextAccessor.HttpContext;
+
+            if (context == null)
+                throw new InvalidOperationException("HttpContext is not available.");
 
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                IsEssential = true,
                 Secure = true,
-                Expires = ExpireAt
+                SameSite = SameSiteMode.Strict,
+                IsEssential = true,
+                Expires = expireAt
             };
 
-            var context = _httpContextAccessor.HttpContext;
-            if (context == null)
-                throw new InvalidOperationException("HttpContext is not available.");
-
-            context.Response.Cookies.Append("refreshToken", Token, cookieOptions);
-            return Task.CompletedTask;
+            context.Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
 
-        public Task<string?> GetRefreshTokenFromCookies()
+        /// <summary>
+        /// Retrieves the refresh token from HTTP cookies.
+        /// </summary>
+        /// <returns>
+        /// The refresh token string if exists; otherwise null.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when HttpContext is not available.
+        /// </exception>
+        public string? GetRefreshTokenFromCookies()
         {
             var context = _httpContextAccessor.HttpContext;
 
             if (context == null)
                 throw new InvalidOperationException("HttpContext is not available.");
 
-            return Task.FromResult<string?>(context.Request.Cookies["refreshToken"]);
+            var token = context.Request.Cookies["refreshToken"];
+
+            return token != null ? token : null;
         }
+
+
+        #region Private Helpers
+
+        /// <summary>
+        /// Hashes a token using SHA256 for secure storage in the database.
+        /// </summary>
+        /// <param name="token">Plain token value.</param>
+        /// <returns>Hashed token string.</returns>
+        private string HashToken(string token)
+        {
+            using var sha = SHA256.Create();
+            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(token));
+            return Convert.ToBase64String(bytes);
+        }
+        #endregion
     }
 }

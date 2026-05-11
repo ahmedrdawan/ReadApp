@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace MyReadsApp.Infstructure.Services.Account
 {
+    /// <summary>
+    /// Provides access to the currently authenticated user information
+    /// from the HTTP context.
+    /// </summary>
     public class UserAuthServices : IUserAuthServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -19,6 +23,16 @@ namespace MyReadsApp.Infstructure.Services.Account
             _httpContextAccessor = httpContextAccessor;
         }
 
+        /// <summary>
+        /// Retrieves the current authenticated user's unique identifier (GUID)
+        /// from the JWT claims in the HTTP context.
+        /// </summary>
+        /// <returns>
+        /// The user ID as a Guid.
+        /// </returns>
+        /// <exception cref="UnauthorizedAccessException">
+        /// Thrown when the user is not authenticated or claim is missing.
+        /// </exception>
         public Guid GetCurrentUser()
         {
             var claim = _httpContextAccessor.HttpContext?

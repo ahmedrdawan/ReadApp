@@ -15,5 +15,7 @@
         public ICollection<Post> Posts { get; set; }
         public ICollection<FaviorateBook> FaviorateBooks { get; set; }
         public ICollection<UserBook> UserBooks { get; set; }
+
+        public ICollection<BookCategory> BookCategories { get; set; }
     }
 }

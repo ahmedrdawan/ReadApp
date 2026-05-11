@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MyReadsApp.API.DTOs.FriendShip;
@@ -10,6 +11,7 @@ using MyReadsApp.Infstructure.Services;
 
 namespace MyReadsApp.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FriendShipController : ControllerBase

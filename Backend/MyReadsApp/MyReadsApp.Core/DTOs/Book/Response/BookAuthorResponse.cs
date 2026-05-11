@@ -13,5 +13,6 @@ namespace MyReadsApp.Core.DTOs.Book.Response
         public string? Description { get; set; }
         public string? BookImage { get; set; }
         public Guid AuthorId { get; set; }
+        public string? AuthorName { get; set; }
     }
 }

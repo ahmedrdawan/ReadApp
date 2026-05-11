@@ -6,11 +6,9 @@ namespace MyReadsApp.Core.Services.Interfaces.Account
 {
     public interface IJwtTokenServices
     {
-        Task<TokenResult> GenerateJwtTokenAsync(User user);
-        Task<Entities.Identity.RefreshToken> GenerateRefreshTokenAsync();
+        Task<TokenDto> GenerateJwtTokenAsync(User user);
+        Task<RefreshToken> GenerateRefreshTokenAsync();
         Task SetRefreshTokenInCookies(string Token, DateTime ExpireAt);
-        Task<string?> GetRefreshTokenFromCookies();
-        Task<Response<RefreshTokenResponse>> RefreshTokenAsync();
-
+        string? GetRefreshTokenFromCookies();
     }
 }

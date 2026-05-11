@@ -176,6 +176,66 @@ namespace MyReadsApp.Infstructure.Migrations
                     b.ToTable("Books");
                 });
 
+            modelBuilder.Entity("MyReadsApp.Core.Entities.BookCategory", b =>
+                {
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BookId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("BookCategories");
+                });
+
+            modelBuilder.Entity("MyReadsApp.Core.Entities.BookRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BookRatings");
+                });
+
+            modelBuilder.Entity("MyReadsApp.Core.Entities.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("MyReadsApp.Core.Entities.Comment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -254,14 +314,19 @@ namespace MyReadsApp.Infstructure.Migrations
 
             modelBuilder.Entity("MyReadsApp.Core.Entities.Identity.RefreshToken", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ExpireAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RevokedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Token")
@@ -549,6 +614,44 @@ namespace MyReadsApp.Infstructure.Migrations
                     b.Navigation("Author");
                 });
 
+            modelBuilder.Entity("MyReadsApp.Core.Entities.BookCategory", b =>
+                {
+                    b.HasOne("MyReadsApp.Core.Entities.Book", "Book")
+                        .WithMany("BookCategories")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("MyReadsApp.Core.Entities.Category", "Category")
+                        .WithMany("BookCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("MyReadsApp.Core.Entities.BookRating", b =>
+                {
+                    b.HasOne("MyReadsApp.Core.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyReadsApp.Core.Entities.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MyReadsApp.Core.Entities.Comment", b =>
                 {
                     b.HasOne("MyReadsApp.Core.Entities.Post", "Post")
@@ -700,11 +803,18 @@ namespace MyReadsApp.Infstructure.Migrations
 
             modelBuilder.Entity("MyReadsApp.Core.Entities.Book", b =>
                 {
+                    b.Navigation("BookCategories");
+
                     b.Navigation("FaviorateBooks");
 
                     b.Navigation("Posts");
 
                     b.Navigation("UserBooks");
+                });
+
+            modelBuilder.Entity("MyReadsApp.Core.Entities.Category", b =>
+                {
+                    b.Navigation("BookCategories");
                 });
 
             modelBuilder.Entity("MyReadsApp.Core.Entities.Identity.User", b =>

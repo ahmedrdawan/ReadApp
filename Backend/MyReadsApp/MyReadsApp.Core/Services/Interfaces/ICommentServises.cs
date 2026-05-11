@@ -17,5 +17,6 @@ namespace MyReadsApp.Core.Services.Interfaces
         Task<Response<CommentResponse>> DeleteAsync(Guid CommentId);
         Task<Response<CommentResponse>> UpdateAsync(Guid CommentId, Comment newComment);
         Task<Response<CommentResponse>> GetAsync(Guid CommentId);
+        Task<Response<MyReadsApp.Core.Common.PagedResult<CommentResponse>>> GetListAsync(Guid postId, int pageNumber = 1, int pageSize = 10);
     }
 }

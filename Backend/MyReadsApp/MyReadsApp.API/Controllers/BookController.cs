@@ -79,5 +79,46 @@ namespace MyReadsApp.API.Controllers
                 return StatusCode(result.StatusCode, result);
             return NoContent();
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetList([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] Guid? categoryId = null)
+        {
+            var res = await _bookServices.GetListAsync(pageNumber, pageSize, categoryId);
+            return StatusCode(res.StatusCode, res);
+        }
+
+        [HttpGet("search")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Search([FromQuery] string q, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] Guid? categoryId = null)
+        {
+            var res = await _bookServices.SearchAsync(q, pageNumber, pageSize, categoryId);
+            return StatusCode(res.StatusCode, res);
+        }
+
+        [HttpPost("{bookId}/rating")]
+        [Authorize]
+        public async Task<IActionResult> Rate(Guid bookId, [FromBody] MyReadsApp.Core.DTOs.Book.Request.RateBookRequest request)
+        {
+            var sub = User.FindFirst("sub")?.Value;
+            if (string.IsNullOrEmpty(sub)) return Forbid();
+            var userId = Guid.Parse(sub);
+            var res = await _bookServices.RateBookAsync(bookId, userId, request.Value);
+            return StatusCode(res.StatusCode, res);
+        }
+
+        [HttpGet("{bookId}/rating")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetRating(Guid bookId)
+        {
+            Guid? userId = null;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var sub = User.FindFirst("sub")?.Value;
+                if (!string.IsNullOrEmpty(sub)) userId = Guid.Parse(sub);
+            }
+            var res = await _bookServices.GetRatingSummaryAsync(bookId, userId);
+            return StatusCode(res.StatusCode, res);
+        }
     }
 }

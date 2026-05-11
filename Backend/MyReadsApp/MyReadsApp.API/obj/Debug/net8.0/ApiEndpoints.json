@@ -29,9 +29,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
-        "Type": "MyReadsApp.Core.DTOs.Auth.Request.ForgotPasswordDtos",
-        "IsRequired": true
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -76,7 +76,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "MyReadsApp.Core.DTOs.Auth.Request.ResetPasswordDtos",
+        "Type": "MyReadsApp.API.DTOs.Auth.Request.ResetPasswordDto",
         "IsRequired": true
       }
     ],
@@ -92,7 +92,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "MyReadsApp.API.DTOs.Account.SignInDtos",
+        "Type": "MyReadsApp.API.DTOs.Auth.Request.LoginRequestDto",
         "IsRequired": true
       }
     ],
@@ -108,29 +108,8 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "MyReadsApp.API.DTOs.Account.SignUpDtos",
+        "Type": "MyReadsApp.API.DTOs.Auth.Request.RegisterRequestDto",
         "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "MyReadsApp.API.Controllers.AuthController",
-    "Method": "VerifyResetToken",
-    "RelativePath": "api/Auth/Verify-reset-token",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "email",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "token",
-        "Type": "System.String",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -222,6 +201,32 @@
   },
   {
     "ContainingType": "MyReadsApp.API.Controllers.BookController",
+    "Method": "GetList",
+    "RelativePath": "api/Book",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "categoryId",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.BookController",
     "Method": "GetBook",
     "RelativePath": "api/Book/{BookId}",
     "HttpMethod": "GET",
@@ -268,6 +273,121 @@
       {
         "Name": "BookId",
         "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.BookController",
+    "Method": "Rate",
+    "RelativePath": "api/Book/{bookId}/rating",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bookId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.Core.DTOs.Book.Request.RateBookRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.BookController",
+    "Method": "GetRating",
+    "RelativePath": "api/Book/{bookId}/rating",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bookId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.BookController",
+    "Method": "Search",
+    "RelativePath": "api/Book/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "categoryId",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.CategoryController",
+    "Method": "Get",
+    "RelativePath": "api/Category",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.CategoryController",
+    "Method": "Create",
+    "RelativePath": "api/Category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.Core.DTOs.Category.Request.CreateCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.CategoryController",
+    "Method": "Update",
+    "RelativePath": "api/Category/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "MyReadsApp.Core.DTOs.Category.Request.UpdateCategoryRequest",
         "IsRequired": true
       }
     ],
@@ -432,6 +552,27 @@
   },
   {
     "ContainingType": "MyReadsApp.API.Controllers.PostController",
+    "Method": "GetPosts",
+    "RelativePath": "api/Post",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.PostController",
     "Method": "CreatePost",
     "RelativePath": "api/Post",
     "HttpMethod": "POST",
@@ -542,6 +683,32 @@
         "Name": "request",
         "Type": "MyReadsApp.API.DTOs.Comment.Request.UpdateCommentRequest",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyReadsApp.API.Controllers.CommentController",
+    "Method": "GetComments",
+    "RelativePath": "api/Post/{PostId}/Comments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PostId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "pageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

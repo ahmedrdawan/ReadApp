@@ -24,6 +24,22 @@ namespace MyReadsApp.API.Controllers
             _userAuthServices = userAuthServices;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetPosts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            Guid? currentUser = null;
+            if (User?.Identity?.IsAuthenticated == true)
+            {
+                try { currentUser = _userAuthServices.GetCurrentUser(); } catch { currentUser = null; }
+            }
+
+            var result = await _PostServices.GetFeedAsync(pageNumber, pageSize, currentUser);
+            if (!result.IsSuccess)
+                return StatusCode(result.StatusCode, result);
+            return Ok(result.Value);
+        }
+
         [HttpGet("{PostId}")]
         public async Task<IActionResult> GetPost(Guid PostId)
         {
