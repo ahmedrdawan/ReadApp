@@ -6,6 +6,9 @@ using MyReadsApp.Core.Services.Interfaces.Account;
 
 namespace MyReadsApp.API.Controllers
 {
+    /// <summary>
+    /// Handles like management endpoints for posts including creating, deleting, and counting likes.
+    /// </summary>
     [Authorize]
     [Route("api/post")]
     [ApiController]
@@ -20,6 +23,13 @@ namespace MyReadsApp.API.Controllers
             _userAuthServices = userAuthServices;
         }
 
+        /// <summary>
+        /// Retrieves the count of likes for a post.
+        /// </summary>
+        /// <param name="postId">The unique identifier of the post.</param>
+        /// <returns>
+        /// HTTP response containing the count of likes for the post.
+        /// </returns>
         [HttpGet("{postId}/likes")]
         public async Task<IActionResult> GetCount(Guid postId)
         {
@@ -28,6 +38,14 @@ namespace MyReadsApp.API.Controllers
                 return StatusCode(result.StatusCode, result);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Adds a like to a post by the current user.
+        /// </summary>
+        /// <param name="postId">The unique identifier of the post to like.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of adding the like.
+        /// </returns>
         [HttpPost("{postId}/likes")]
         public async Task<IActionResult> CreateLike(Guid postId)
         {
@@ -46,6 +64,13 @@ namespace MyReadsApp.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Removes a like from a post by the current user.
+        /// </summary>
+        /// <param name="postId">The unique identifier of the post to unlike.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of removing the like.
+        /// </returns>
         [HttpDelete("{postId}/likes")]
         public async Task<IActionResult> DeleteLike(Guid postId)
         {

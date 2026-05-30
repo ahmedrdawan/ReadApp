@@ -9,6 +9,10 @@ using MyReadsApp.Core.Services.Interfaces.Account;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Manages user-related operations in the infrastructure layer, including profile updates,
+    /// retrieval, and coordination with identity/auth systems and caches.
+    /// </summary>
     public class UserServices : IUserServices
     {
         private readonly UserManager<User> _userManager;
@@ -25,6 +29,11 @@ namespace MyReadsApp.Infstructure.Services
             _fileStorage = fileStorage;
         }
 
+        /// <summary>
+        /// Updates the current user's profile information including username, country, gender, and birth date.
+        /// </summary>
+        /// <param name="request">Edit information user request DTO with updated profile data.</param>
+        /// <returns>A Response containing the updated user profile response.</returns>
         public async Task<Response<UserProfileResponse>> EditInformationUser(EditInformationUserRequest request)
         {
             var userId = _userAuthServices.GetCurrentUser();
@@ -52,6 +61,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<UserProfileResponse>.Success(BuildUserProfileResponse(user));
         }
 
+        /// <summary>
+        /// Uploads a new user avatar or profile image, replacing any existing image.
+        /// </summary>
+        /// <param name="request">File storage request containing the image file to upload.</param>
+        /// <returns>A Response containing the updated user profile response.</returns>
         public async Task<Response<UserProfileResponse>> UploadImageOrAvata(FileStorageRequest request)
         {
             var userId = _userAuthServices.GetCurrentUser();
@@ -80,6 +94,10 @@ namespace MyReadsApp.Infstructure.Services
         }
 
 
+        /// <summary>
+        /// Removes the current user's avatar or profile image.
+        /// </summary>
+        /// <returns>A Response containing the updated user profile response with null UserImage.</returns>
         public async Task<Response<UserProfileResponse>> RemoveAvatarOrImage()
         {
             var userId = _userAuthServices.GetCurrentUser();

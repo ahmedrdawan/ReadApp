@@ -10,6 +10,9 @@ using MyReadsApp.Infstructure.Services.Cache;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Infrastructure implementation of book-related services. Handles persistence, caching, and business checks for books.
+    /// </summary>
     public class BookServices : IBookServices
     {
         private readonly IGenericRepository<Book> _genericRepository;
@@ -23,17 +26,37 @@ namespace MyReadsApp.Infstructure.Services
             _cache = cache;
         }
 
-        public async Task<Response<BookAuthorResponse>> CreateAsync(Book entity)
+        /// <summary>
+        /// Creates a new book in the database after validating the author and uniqueness.
+        /// </summary>
+        /// <param name="request">Create book request DTO.</param>
+        /// <returns>A Response containing the created book author response.</returns>
+        /// <summary>
+        /// Creates a new book in the database after validating the author and uniqueness.
+        /// </summary>
+        /// <param name="request">Create book request DTO.</param>
+        /// <returns>A Response containing the created book author response.</returns>
+        public async Task<Response<BookAuthorResponse>> CreateAsync(CreateBookRequest request)
         {
-            var author = await _context.Authors.FindAsync(entity.AuthorId);
+            var author = await _context.Authors.FindAsync(request.AuthorId);
             if (author == null)
                 return Response<BookAuthorResponse>.Failure("The Author Not Found", 404);
 
             var exists = await _context.Books
-                .AnyAsync(x => x.Title == entity.Title && x.AuthorId == entity.AuthorId);
+                .AnyAsync(x => x.Title == request.Title && x.AuthorId == request.AuthorId);
 
             if (exists)
                 return Response<BookAuthorResponse>.Failure("The Book Already Exist", 409);
+
+            var entity = new Book
+            {
+                Id = Guid.NewGuid(),
+                Title = request.Title,
+                AuthorId = request.AuthorId,
+                Description = request.Description,
+                BookImage = request.BookImage,
+                CreatedAt = DateTime.UtcNow
+            };
 
             await _genericRepository.CreateAsync(entity);
 
@@ -43,6 +66,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<BookAuthorResponse>.Success(response);
         }
 
+        /// <summary>
+        /// Deletes a book by its identifier and removes associated cache entry.
+        /// </summary>
+        /// <param name="BookId">The unique identifier of the book to delete.</param>
+        /// <returns>A Response containing the deleted book author response.</returns>
         public async Task<Response<BookAuthorResponse>> DeleteAsync(Guid BookId)
         {
             var book = await _context.Books.FindAsync(BookId);
@@ -55,6 +83,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<BookAuthorResponse>.Success(BuildResponse(book, author?.AuthorName));
         }
 
+        /// <summary>
+        /// Retrieves a book by its identifier, using cache when available.
+        /// </summary>
+        /// <param name="BookId">The unique identifier of the book.</param>
+        /// <returns>A Response containing the book author response.</returns>
         public async Task<Response<BookAuthorResponse>> GetAsync(Guid BookId)
         {
             string cacheKey = GetCacheKey(BookId);
@@ -72,25 +105,31 @@ namespace MyReadsApp.Infstructure.Services
             return Response<BookAuthorResponse>.Success(response);
         }
 
-        public async Task<Response<BookAuthorResponse>> UpdateAsync(Guid id, Book newEntity)
+        /// <summary>
+        /// Updates an existing book in the database with the provided new request values.
+        /// </summary>
+        /// <param name="id">Identifier of the book to update.</param>
+        /// <param name="request">Update book request DTO.</param>
+        /// <returns>A Response containing the updated book author response.</returns>
+        public async Task<Response<BookAuthorResponse>> UpdateAsync(Guid id, UpdateBookRequest request)
         {
             var entity = await _context.Books.FindAsync(id);
 
             if (entity == null)
                 return Response<BookAuthorResponse>.Failure($"Book with Id '{id}' not found.", 404);
 
-            var authorExists = await _context.Authors.AnyAsync(a => a.Id == newEntity.AuthorId);
+            var authorExists = await _context.Authors.AnyAsync(a => a.Id == request.AuthorId);
             if (!authorExists)
-                return Response<BookAuthorResponse>.Failure($"Author with Id '{newEntity.AuthorId}' not found.", 404);
+                return Response<BookAuthorResponse>.Failure($"Author with Id '{request.AuthorId}' not found.", 404);
 
-            if (!string.IsNullOrEmpty(newEntity.BookImage))
-                entity.BookImage = newEntity.BookImage;
-            if (!string.IsNullOrEmpty(newEntity.Description))
-                entity.Description = newEntity.Description;
-            if (!string.IsNullOrEmpty(newEntity.Title))
-                entity.Title = newEntity.Title;
+            if (!string.IsNullOrEmpty(request.BookImage))
+                entity.BookImage = request.BookImage;
+            if (!string.IsNullOrEmpty(request.Description))
+                entity.Description = request.Description;
+            if (!string.IsNullOrEmpty(request.Title))
+                entity.Title = request.Title;
 
-            entity.AuthorId = newEntity.AuthorId;
+            entity.AuthorId = request.AuthorId;
 
             await _genericRepository.UpdateAsync(entity);
             var author = await _context.Authors.FindAsync(entity.AuthorId);
@@ -101,6 +140,13 @@ namespace MyReadsApp.Infstructure.Services
 
         private static string GetCacheKey(Guid id) => $"Book:{id}";
 
+        /// <summary>
+        /// Retrieves a paginated list of books, optionally filtered by category.
+        /// </summary>
+        /// <param name="pageNumber">Page number for pagination (default: 1).</param>
+        /// <param name="pageSize">Number of items per page (default: 10).</param>
+        /// <param name="categoryId">Optional category identifier to filter results.</param>
+        /// <returns>A Response containing a paged result of BookAuthorResponse.</returns>
         public async Task<Response<MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>>> GetListAsync(int pageNumber = 1, int pageSize = 10, Guid? categoryId = null)
         {
             if (pageNumber <= 0) pageNumber = 1;
@@ -133,6 +179,14 @@ namespace MyReadsApp.Infstructure.Services
             return Response<MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>>.Success(paged);
         }
 
+        /// <summary>
+        /// Searches for books by query string with pagination, optionally filtered by category.
+        /// </summary>
+        /// <param name="query">Search query string.</param>
+        /// <param name="pageNumber">Page number for pagination (default: 1).</param>
+        /// <param name="pageSize">Number of items per page (default: 10).</param>
+        /// <param name="categoryId">Optional category identifier to filter search results.</param>
+        /// <returns>A Response containing a paged result of BookAuthorResponse matching the query.</returns>
         public async Task<Response<MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>>> SearchAsync(string query, int pageNumber = 1, int pageSize = 10, Guid? categoryId = null)
         {
             if (string.IsNullOrWhiteSpace(query))
@@ -166,6 +220,13 @@ namespace MyReadsApp.Infstructure.Services
             return Response<MyReadsApp.Core.Common.PagedResult<BookAuthorResponse>>.Success(paged);
         }
 
+        /// <summary>
+        /// Adds or updates a rating for a book by a user.
+        /// </summary>
+        /// <param name="bookId">The book identifier to rate.</param>
+        /// <param name="userId">The user identifier providing the rating.</param>
+        /// <param name="value">Rating value (must be between 1 and 5).</param>
+        /// <returns>A Response with operation result.</returns>
         public async Task<Response<object>> RateBookAsync(Guid bookId, Guid userId, int value)
         {
             if (value < 1 || value > 5)
@@ -191,6 +252,12 @@ namespace MyReadsApp.Infstructure.Services
             return Response<object>.Success(null, 200);
         }
 
+        /// <summary>
+        /// Retrieves rating summary for a book, optionally including the specified user's rating.
+        /// </summary>
+        /// <param name="bookId">The book identifier.</param>
+        /// <param name="userId">Optional user identifier to include user-specific rating.</param>
+        /// <returns>A Response with rating summary object containing average and count.</returns>
         public async Task<Response<object>> GetRatingSummaryAsync(Guid bookId, Guid? userId = null)
         {
             var book = await _context.Books.FindAsync(bookId);

@@ -10,6 +10,10 @@ using MyReadsApp.Infstructure.Services.Cache;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Handles user follow/unfollow operations and related queries in the infrastructure layer.
+    /// Interacts with repositories and maintains relevant caches.
+    /// </summary>
     public class UserfollowServices : IUserfollowServices
     {
         private readonly IGenericRepository<UserFollow> _repository;
@@ -23,6 +27,11 @@ namespace MyReadsApp.Infstructure.Services
             _cache = cache;
         }
 
+        /// <summary>
+        /// Creates a new user follow relationship after validating uniqueness.
+        /// </summary>
+        /// <param name="entity">The user follow entity to create.</param>
+        /// <returns>A Response containing the created user follow response.</returns>
         public async Task<Response<UserFollowResponse>> CreateAsync(UserFollow entity)
         {
             var userFollowExisting = await _context.UserFollows
@@ -36,6 +45,12 @@ namespace MyReadsApp.Infstructure.Services
             return Response<UserFollowResponse>.Success(await BuildResponse(entity));
         }
 
+        /// <summary>
+        /// Deletes a user follow relationship between two users.
+        /// </summary>
+        /// <param name="SendUserId">The identifier of the user who is following.</param>
+        /// <param name="ReceivedUserId">The identifier of the user being followed.</param>
+        /// <returns>A Response containing the deleted user follow response.</returns>
         public async Task<Response<UserFollowResponse>> DeleteAsync(Guid SendUserId, Guid ReceivedUserId)
         {
             var userFollowExisting = await _context.UserFollows
@@ -50,6 +65,11 @@ namespace MyReadsApp.Infstructure.Services
 
         }
 
+        /// <summary>
+        /// Retrieves all followers of a specific user, using cache when available.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <returns>An enumerable collection of user followers responses.</returns>
         public async Task<IEnumerable<UserfollowersResponse>> GetFollowersAsync(Guid userId)
         {
             var cacheKey = $"UserFollow:Followers:{userId}";
@@ -70,6 +90,11 @@ namespace MyReadsApp.Infstructure.Services
             return followers;
         }
 
+        /// <summary>
+        /// Retrieves all users being followed by a specific user, using cache when available.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <returns>An enumerable collection of user followings responses.</returns>
         public async Task<IEnumerable<UserfollowingsResponse>> GetFollowingsAsync(Guid userId)
         {
             var cacheKey = $"UserFollow:Followings:{userId}";

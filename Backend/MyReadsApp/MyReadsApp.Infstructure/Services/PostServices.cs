@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.Post.Response;
+using MyReadsApp.Core.DTOs.Post.Request;
 using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
@@ -11,6 +12,11 @@ using MyReadsApp.Infstructure.Services.Cache;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Implements post-related business logic and data access in the infrastructure layer.
+    /// This class handles creating, updating, retrieving, and deleting posts, mapping entities,
+    /// and coordinating cache operations where applicable.
+    /// </summary>
     public class PostServices : IPostServices
     {
         private readonly IGenericRepository<Post> _genericRepository;
@@ -26,13 +32,27 @@ namespace MyReadsApp.Infstructure.Services
             _cache = cache;
         }
 
-        public async Task<Response<PostResponse>> CreateAsync(Post entity)
+        /// <summary>
+        /// Creates a new post in the database after validating book and user exist.
+        /// </summary>
+        /// <param name="request">Create post request DTO.</param>
+        /// <returns>A Response containing the created post response.</returns>
+        public async Task<Response<PostResponse>> CreateAsync(CreatePostRequest request)
         {
-            var book = await _context.Books.FindAsync(entity.BookId);
-            var user = await _context.Users.FindAsync(entity.UserId);
+            var book = await _context.Books.FindAsync(request.BookId);
+            var user = await _context.Users.FindAsync(request.UserId);
 
             if (book is null || user is null)
                 return Response<PostResponse>.Failure("The Book Or User Not Found", 404);
+
+            var entity = new Post
+            {
+                Id = Guid.NewGuid(),
+                BookId = request.BookId,
+                UserId = request.UserId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = null
+            };
 
             await _genericRepository.CreateAsync(entity);
             var response = BuildResponse(entity);
@@ -40,6 +60,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<PostResponse>.Success(response);
         }
 
+        /// <summary>
+        /// Deletes a post by its identifier after verifying ownership.
+        /// </summary>
+        /// <param name="PostId">The unique identifier of the post to delete.</param>
+        /// <returns>A Response containing the deleted post response.</returns>
         public async Task<Response<PostResponse>> DeleteAsync(Guid PostId)
         {
             var post = await _context.Posts.FindAsync(PostId);
@@ -54,6 +79,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<PostResponse>.Success(BuildResponse(post));
         }
 
+        /// <summary>
+        /// Retrieves a post by its identifier, using cache when available.
+        /// </summary>
+        /// <param name="PostId">The unique identifier of the post.</param>
+        /// <returns>A Response containing the post response.</returns>
         public async Task<Response<PostResponse>> GetAsync(Guid PostId)
         {
             var cached = await _cache.GetRecordAsync<PostResponse>(GetCacheKey(PostId));
@@ -69,20 +99,25 @@ namespace MyReadsApp.Infstructure.Services
             return Response<PostResponse>.Success(response);
         }
 
-        public async Task<Response<PostResponse>> UpdateAsync(Guid PostId, Post NewEntity)
+        /// <summary>
+        /// Updates an existing post after verifying ownership.
+        /// </summary>
+        /// <param name="PostId">The unique identifier of the post to update.</param>
+        /// <param name="request">Update post request DTO.</param>
+        /// <returns>A Response containing the updated post response.</returns>
+        public async Task<Response<PostResponse>> UpdateAsync(Guid PostId, UpdatePostRequest request)
         {
             var post = await _context.Posts.FindAsync(PostId);
-            var book = await _context.Books.FindAsync(NewEntity.BookId);
+            var book = await _context.Books.FindAsync(request.BookId);
             if (post is null || book is null)
                 return Response<PostResponse>.Failure($"Post or Book not found.", 404);
 
             if (post.UserId != _userAuthServices.GetCurrentUser())
                 return Response<PostResponse>.Failure("The User Not Authorize", 403);
 
-
-            post.BookId = NewEntity.BookId;
-            post.UserId = NewEntity.UserId;
-            post.UpdatedAt = NewEntity.UpdatedAt;
+            post.BookId = request.BookId;
+            post.UserId = request.UserId;
+            post.UpdatedAt = DateTime.UtcNow;
 
             await _genericRepository.UpdateAsync(post);
             var response = BuildResponse(post);
@@ -90,6 +125,13 @@ namespace MyReadsApp.Infstructure.Services
             return Response<PostResponse>.Success(response);
         }
 
+        /// <summary>
+        /// Retrieves a paginated feed of posts with engagement metrics (likes, comments, favorites) and user context.
+        /// </summary>
+        /// <param name="pageNumber">Page number for pagination (default: 1).</param>
+        /// <param name="pageSize">Number of items per page (default: 10).</param>
+        /// <param name="currentUserId">Optional current user identifier to include user-specific context (liked, favorited).</param>
+        /// <returns>A Response containing a paged result of PostFeedItem.</returns>
         public async Task<Response<MyReadsApp.Core.Common.PagedResult<MyReadsApp.Core.DTOs.Post.Response.PostFeedItem>>> GetFeedAsync(int pageNumber = 1, int pageSize = 10, Guid? currentUserId = null)
         {
             if (pageNumber <= 0) pageNumber = 1;
