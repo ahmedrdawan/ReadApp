@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.UserBook.Response;
+using MyReadsApp.Core.DTOs.UserBook.Request;
 using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
@@ -10,6 +11,9 @@ using MyReadsApp.Infstructure.Services.Cache;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Infrastructure implementation for user book (shelf) operations. Handles persistence and caching for user book entries.
+    /// </summary>
     public class UserBookServices : IUserBookServices
     {
         private readonly IGenericRepository<UserBook> _repository;
@@ -23,13 +27,27 @@ namespace MyReadsApp.Infstructure.Services
             _cache = cache;
         }
 
-        public async Task<Response<UserBookResponse>> CreateAsync(UserBook entity)
+        /// <summary>
+        /// Creates a new user book entry after validating uniqueness.
+        /// </summary>
+        /// <param name="request">Create user book request DTO.</param>
+        /// <returns>A Response containing the created user book response.</returns>
+        public async Task<Response<UserBookResponse>> CreateAsync(CreateUserBookRequest request)
         {
             var userBookExisting = await _context.UserBooks
-                .FirstOrDefaultAsync(us => us.UserId == entity.UserId && us.BookId == entity.BookId);
+                .FirstOrDefaultAsync(us => us.UserId == request.UserId && us.BookId == request.BookId);
 
             if (userBookExisting != null)
                 return Response<UserBookResponse>.Failure("The userBook Is already Exist", 409);
+
+            var entity = new UserBook
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                BookId = request.BookId,
+                Statuts = request.Statuts,
+                CreatedAt = DateTime.UtcNow
+            };
 
             await _repository.CreateAsync(entity);
             await _cache.RemoveAsync(GetAllCacheKey());
@@ -38,6 +56,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<UserBookResponse>.Success(response);
         }
 
+        /// <summary>
+        /// Deletes a user book entry by its identifier.
+        /// </summary>
+        /// <param name="Id">The unique identifier of the user book to delete.</param>
+        /// <returns>A Response containing the deleted user book response.</returns>
         public async Task<Response<UserBookResponse>> DeleteAsync(Guid Id)
         {
             var userBookExisting = await _context.UserBooks.FindAsync(Id);
@@ -50,6 +73,10 @@ namespace MyReadsApp.Infstructure.Services
             return Response<UserBookResponse>.Success(BuildResponse(userBookExisting));
         }
 
+        /// <summary>
+        /// Retrieves all user books, using cache when available.
+        /// </summary>
+        /// <returns>A Response containing all user book responses or failure if none found.</returns>
         public Response<IEnumerable<UserBookResponse>> GetAllAsync()
         {
             var cached = _cache.GetRecordAsync<List<UserBookResponse>>(GetAllCacheKey()).GetAwaiter().GetResult();
@@ -70,6 +97,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<IEnumerable<UserBookResponse>>.Success(userBooks);
         }
 
+        /// <summary>
+        /// Retrieves a user book by its identifier, using cache when available.
+        /// </summary>
+        /// <param name="Id">The unique identifier of the user book.</param>
+        /// <returns>A Response containing the user book response.</returns>
         public async Task<Response<UserBookResponse>> GetByIdAsync(Guid Id)
         {
             var key = GetCacheKey(Id);
@@ -86,13 +118,19 @@ namespace MyReadsApp.Infstructure.Services
             return Response<UserBookResponse>.Success(response);
         }
 
-        public async Task<Response<UserBookResponse>> UpdateAsync(Guid Id, UserBook newEntity)
+        /// <summary>
+        /// Updates an existing user book entry with the provided status.
+        /// </summary>
+        /// <param name="Id">The unique identifier of the user book to update.</param>
+        /// <param name="request">Update user book request DTO.</param>
+        /// <returns>A Response containing the updated user book response.</returns>
+        public async Task<Response<UserBookResponse>> UpdateAsync(Guid Id, UpdateUserBookRequest request)
         {
             var userBookExisting = await _context.UserBooks.FindAsync(Id);
             if (userBookExisting == null)
                 return Response<UserBookResponse>.Failure("The userBook Is Not Found", 404);
 
-            userBookExisting.Statuts = newEntity.Statuts;
+            userBookExisting.Statuts = request.Statuts;
             await _repository.UpdateAsync(userBookExisting);
 
             var response = BuildResponse(userBookExisting);

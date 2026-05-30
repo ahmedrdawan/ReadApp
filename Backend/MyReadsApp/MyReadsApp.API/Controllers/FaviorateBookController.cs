@@ -9,6 +9,9 @@ using System.ComponentModel.Design;
 
 namespace MyReadsApp.API.Controllers
 {
+    /// <summary>
+    /// Handles favorite book management endpoints including creating, deleting, and retrieving favorite books.
+    /// </summary>
     [Authorize(Roles = "User")]
     [Route("api/Faviorates")]
     [ApiController]
@@ -23,6 +26,13 @@ namespace MyReadsApp.API.Controllers
             _faviroteBookServices = faviroteBookServices;
         }
 
+        /// <summary>
+        /// Adds a book to the user's favorites.
+        /// </summary>
+        /// <param name="BookId">The unique identifier of the book to favorite.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of adding to favorites.
+        /// </returns>
         [HttpPost("{BookId}")]
         public async Task<IActionResult> CreateFaviorateBook(Guid BookId)
         {
@@ -43,6 +53,13 @@ namespace MyReadsApp.API.Controllers
                     value: result.Value);
         }
 
+        /// <summary>
+        /// Removes a book from the user's favorites.
+        /// </summary>
+        /// <param name="BookId">The unique identifier of the book to remove from favorites.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of removing from favorites.
+        /// </returns>
         [HttpDelete("{BookId}")]
         public async Task<IActionResult> DeleteFaviorateBook(Guid BookId)
         {
@@ -52,6 +69,13 @@ namespace MyReadsApp.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Retrieves a favorite book by its identifier.
+        /// </summary>
+        /// <param name="BookId">The unique identifier of the book.</param>
+        /// <returns>
+        /// HTTP response containing favorite book details or not found error.
+        /// </returns>
         [HttpGet("{BookId}")]
         public async Task<IActionResult> GetFaviorateBook(Guid BookId)
         {

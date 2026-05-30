@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.Comment.Response;
+using MyReadsApp.Core.DTOs.Comment.Request;
 using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
@@ -11,6 +12,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Implements comment management in the infrastructure layer: create, update, delete, and fetch comments.
+    /// Coordinates with repositories and caching to provide consistent responses.
+    /// </summary>
     public class CommentServices : ICommentServises
     {
         private readonly IGenericRepository<Comment> _repository;
@@ -26,15 +31,29 @@ namespace MyReadsApp.Infstructure.Services
             _cache = cache;
         }
 
-        public async Task<Response<CommentResponse>> CreateAsync(Comment entity)
+        /// <summary>
+        /// Creates a new comment on a post after validating user and post exist.
+        /// </summary>
+        /// <param name="request">Create comment request DTO.</param>
+        /// <returns>A Response containing the created comment response.</returns>
+        public async Task<Response<CommentResponse>> CreateAsync(CreateCommentRequest request)
         {
-            var user = await _context.Users.FindAsync(entity.UserId);
+            var user = await _context.Users.FindAsync(request.UserId);
             if (user == null)
                 return Response<CommentResponse>.Failure("The User Not Found", 404);
 
-            var post = await _context.Posts.FindAsync(entity.PostId);
+            var post = await _context.Posts.FindAsync(request.PostId);
             if (post == null)
                 return Response<CommentResponse>.Failure("The Post Not Found", 404);
+
+            var entity = new Comment
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                PostId = request.PostId,
+                content = request.content,
+                CreatedAt = DateTime.UtcNow
+            };
 
             await _repository.CreateAsync(entity);
             var response = BuildResponse(entity);
@@ -43,6 +62,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<CommentResponse>.Success(response);
         }
 
+        /// <summary>
+        /// Deletes a comment by its identifier after verifying ownership.
+        /// </summary>
+        /// <param name="commentId">The unique identifier of the comment to delete.</param>
+        /// <returns>A Response containing the deleted comment response.</returns>
         public async Task<Response<CommentResponse>> DeleteAsync(Guid commentId)
         {
             var comment = await _context.Comments.FindAsync(commentId);
@@ -58,7 +82,13 @@ namespace MyReadsApp.Infstructure.Services
             return Response<CommentResponse>.Success(BuildResponse(comment));
         }
 
-        public async Task<Response<CommentResponse>> UpdateAsync(Guid commentId, Comment newEntity)
+        /// <summary>
+        /// Updates an existing comment after verifying ownership.
+        /// </summary>
+        /// <param name="commentId">The unique identifier of the comment to update.</param>
+        /// <param name="request">Update comment request DTO.</param>
+        /// <returns>A Response containing the updated comment response.</returns>
+        public async Task<Response<CommentResponse>> UpdateAsync(Guid commentId, UpdateCommentRequest request)
         {
             var comment = await _context.Comments.FindAsync(commentId);
             if (comment == null)
@@ -67,7 +97,7 @@ namespace MyReadsApp.Infstructure.Services
             if (comment.UserId != _userAuthServices.GetCurrentUser())
                 return Response<CommentResponse>.Failure("The User Not Authorized", 403);
 
-            comment.content = newEntity.content;
+            comment.content = request.content;
             comment.UpdatedAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(comment);
@@ -77,6 +107,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<CommentResponse>.Success(response);
         }
 
+        /// <summary>
+        /// Retrieves a comment by its identifier, using cache when available.
+        /// </summary>
+        /// <param name="commentId">The unique identifier of the comment.</param>
+        /// <returns>A Response containing the comment response.</returns>
         public async Task<Response<CommentResponse>> GetAsync(Guid commentId)
         {
             var cached = await _cache.GetRecordAsync<CommentResponse>(GetCacheKey(commentId));
@@ -92,6 +127,13 @@ namespace MyReadsApp.Infstructure.Services
             return Response<CommentResponse>.Success(response);
         }
 
+        /// <summary>
+        /// Retrieves a paginated list of comments for a specific post.
+        /// </summary>
+        /// <param name="postId">The post identifier for which to retrieve comments.</param>
+        /// <param name="pageNumber">Page number for pagination (default: 1).</param>
+        /// <param name="pageSize">Number of items per page (default: 10).</param>
+        /// <returns>A Response containing a paged result of CommentResponse.</returns>
         public async Task<Response<MyReadsApp.Core.Common.PagedResult<CommentResponse>>> GetListAsync(Guid postId, int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber <= 0) pageNumber = 1;

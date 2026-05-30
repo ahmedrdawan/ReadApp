@@ -11,6 +11,9 @@ using MyReadsApp.Infstructure.Services;
 
 namespace MyReadsApp.API.Controllers
 {
+    /// <summary>
+    /// Handles friendship management endpoints including adding/removing friends and retrieving friend lists.
+    /// </summary>
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -27,21 +30,31 @@ namespace MyReadsApp.API.Controllers
             _recommendionServices = recommendionServices;
         }
 
+        /// <summary>
+        /// Adds a user as a friend.
+        /// </summary>
+        /// <param name="friendId">The unique identifier of the user to add as a friend.</param>
+        /// <param name="request">Friendship creation data including status.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of adding friend.
+        /// </returns>
         [HttpPost("{friendId}")]
         public async Task<IActionResult> AddFriend(Guid friendId, CreateFriendShipRequest request)
         {
-            var friendShip = new FriendShip
-            {
-                Id = Guid.NewGuid(),
-                UserId = _userAuthServices.GetCurrentUser(),
-                FriendId = friendId,
-                CreatedAt = DateTime.UtcNow,
-                Status = request.Status,
-            };
-            var result = await _friendshipServices.CreateAsync(friendShip);
+            // Map API DTO to Core DTO (include current user and friend id)
+            var coreRequest = new MyReadsApp.Core.DTOs.FriendShip.CreateFriendShipRequest(_userAuthServices.GetCurrentUser(), friendId, request.Status);
+            var result = await _friendshipServices.CreateAsync(coreRequest);
 
             return StatusCode(result.StatusCode, result);
         }
+
+        /// <summary>
+        /// Removes a user from the friend list.
+        /// </summary>
+        /// <param name="friendId">The unique identifier of the friend to remove.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of removing friend.
+        /// </returns>
         [HttpDelete("{friendId}")]
         public async Task<IActionResult> DeleteFriend(Guid friendId)
         {
@@ -51,6 +64,12 @@ namespace MyReadsApp.API.Controllers
 
         }
 
+        /// <summary>
+        /// Retrieves suggested friends based on user preferences.
+        /// </summary>
+        /// <returns>
+        /// HTTP response containing collection of friend suggestions.
+        /// </returns>
         [HttpGet("suggestions")]
         public async Task<IActionResult> GetSuggestions()
         {
@@ -58,6 +77,12 @@ namespace MyReadsApp.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Retrieves all accepted friends of the current user.
+        /// </summary>
+        /// <returns>
+        /// HTTP response containing collection of accepted friends.
+        /// </returns>
         [HttpGet("accepted")]
         public async Task<IActionResult> GetFriends()
         {
@@ -66,6 +91,13 @@ namespace MyReadsApp.API.Controllers
             
             return Ok(result);
         }
+
+        /// <summary>
+        /// Retrieves all blocked friends of the current user.
+        /// </summary>
+        /// <returns>
+        /// HTTP response containing collection of blocked friends.
+        /// </returns>
         [HttpGet("bloked")]
         public async Task<IActionResult> GetBlokedFriends()
         {
@@ -74,6 +106,13 @@ namespace MyReadsApp.API.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Retrieves all pending friend requests for the current user.
+        /// </summary>
+        /// <returns>
+        /// HTTP response containing collection of pending friend requests.
+        /// </returns>
         [HttpGet("pending")]
         public async Task<IActionResult> GetpendingFriends()
         {

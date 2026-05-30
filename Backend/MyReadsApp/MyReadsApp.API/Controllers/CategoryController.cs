@@ -10,6 +10,9 @@ using MyReadsApp.Core.Common;
 
 namespace MyReadsApp.API.Controllers
 {
+    /// <summary>
+    /// Handles category management endpoints including retrieving, creating, and updating book categories.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -21,6 +24,12 @@ namespace MyReadsApp.API.Controllers
             _categoryServices = categoryServices;
         }
 
+        /// <summary>
+        /// Retrieves all available categories.
+        /// </summary>
+        /// <returns>
+        /// HTTP response containing collection of all categories.
+        /// </returns>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Get()
@@ -29,6 +38,13 @@ namespace MyReadsApp.API.Controllers
             return StatusCode(res.StatusCode, res);
         }
 
+        /// <summary>
+        /// Creates a new book category.
+        /// </summary>
+        /// <param name="request">Category creation data including name and description.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of category creation.
+        /// </returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request)
@@ -39,6 +55,14 @@ namespace MyReadsApp.API.Controllers
             return CreatedAtAction(nameof(Get), new { id = res.Value.Id }, res);
         }
 
+        /// <summary>
+        /// Updates an existing category by its identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the category to update.</param>
+        /// <param name="request">Category update data.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of the update.
+        /// </returns>
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCategoryRequest request)

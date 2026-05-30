@@ -11,6 +11,9 @@ using MyReadsApp.Infstructure.Services.Cache;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Infrastructure implementation for favorite book operations. Handles persistence and caching of favorite books.
+    /// </summary>
     public class FaviroteBookServices : IFaviroteBookServices
     {
         private readonly IGenericRepository<FaviorateBook> _repository;
@@ -26,6 +29,11 @@ namespace MyReadsApp.Infstructure.Services
             _cache = cache;
         }
 
+        /// <summary>
+        /// Creates a new favorite book entry for the current user after validating user, book, and uniqueness.
+        /// </summary>
+        /// <param name="entity">The favorite book entity to create.</param>
+        /// <returns>A Response containing the created favorite book response.</returns>
         public async Task<Response<FaviorateBookResponse>> CreateAsync(FaviorateBook entity)
         {
             var user = await _context.Users.FindAsync(entity.UserId);
@@ -62,6 +70,11 @@ namespace MyReadsApp.Infstructure.Services
             };
         }
 
+        /// <summary>
+        /// Removes a favorite book from the current user's favorites.
+        /// </summary>
+        /// <param name="bookId">The unique identifier of the book to remove from favorites.</param>
+        /// <returns>A Response containing the deleted favorite book response.</returns>
         public async Task<Response<FaviorateBookResponse>> DeleteAsync(Guid bookId)
         {
             var userId = _userAuthServices.GetCurrentUser();
@@ -79,6 +92,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<FaviorateBookResponse>.Success(BuildResponse(favBook));
         }
 
+        /// <summary>
+        /// Retrieves a favorite book entry for the current user and specified book, using cache when available.
+        /// </summary>
+        /// <param name="bookId">The unique identifier of the book.</param>
+        /// <returns>A Response containing the favorite book response.</returns>
         public async Task<Response<FaviorateBookResponse>> GetFavBookAsync(Guid bookId)
         {
             var userId = _userAuthServices.GetCurrentUser();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyReadsApp.Core.Common;
 using MyReadsApp.Core.DTOs.FriendShip.Response;
+using MyReadsApp.Core.DTOs.FriendShip.Request;
 using MyReadsApp.Core.Entities;
 using MyReadsApp.Core.Generic.Interfaces;
 using MyReadsApp.Core.Services.Interfaces;
@@ -9,6 +10,10 @@ using System.Linq.Expressions;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Manages friendship relations between users in the infrastructure layer. Handles creating,
+    /// listing and removing friendships and updates persistence and cache as needed.
+    /// </summary>
     public class FriendshipServices : IFriendshipServices
     {
         private readonly IGenericRepository<FriendShip> _repository;
@@ -20,14 +25,28 @@ namespace MyReadsApp.Infstructure.Services
             _context = context;
         }
 
-        public async Task<Response<FriendShipResponse>> CreateAsync(FriendShip entity)
+        /// <summary>
+        /// Creates a new friendship after validating uniqueness.
+        /// </summary>
+        /// <param name="request">Create friendship request DTO.</param>
+        /// <returns>A Response containing the created friendship response.</returns>
+        public async Task<Response<FriendShipResponse>> CreateAsync(CreateFriendShipRequest request)
         {
             var friendShipExisting = await _context.FriendShips
-                .FirstOrDefaultAsync(fh => fh.UserId == entity.UserId && fh.FriendId == entity.FriendId
-                || fh.UserId == entity.FriendId && fh.FriendId == entity.UserId);
+                .FirstOrDefaultAsync(fh => fh.UserId == request.UserId && fh.FriendId == request.FriendId
+                || fh.UserId == request.FriendId && fh.FriendId == request.UserId);
 
             if (friendShipExisting != null)
                 return Response<FriendShipResponse>.Failure("The Friend Ship Is already Exist", 409);
+
+            var entity = new FriendShip
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                FriendId = request.FriendId,
+                Status = request.Status,
+                CreatedAt = DateTime.UtcNow
+            };
 
             await _repository.CreateAsync(entity);
 
@@ -36,6 +55,12 @@ namespace MyReadsApp.Infstructure.Services
 
         
 
+        /// <summary>
+        /// Deletes a friendship between two users.
+        /// </summary>
+        /// <param name="SendUserId">The identifier of the user who initiated the friendship.</param>
+        /// <param name="ReceivedUserId">The identifier of the friend.</param>
+        /// <returns>A Response containing the deleted friendship response.</returns>
         public async Task<Response<FriendShipResponse>> DeleteAsync(Guid SendUserId, Guid ReceivedUserId)
         {
             var friendShipExisting = await _context.FriendShips
@@ -51,6 +76,11 @@ namespace MyReadsApp.Infstructure.Services
 
         }
 
+        /// <summary>
+        /// Retrieves all friendships matching the provided filter criteria.
+        /// </summary>
+        /// <param name="filter">LINQ expression to filter friendships.</param>
+        /// <returns>An enumerable collection of friend responses matching the filter.</returns>
         public async Task<IEnumerable<FriendResponse>> GetAllAsync(Expression<Func<FriendShip, bool>> filter)
         {
             return await _context.FriendShips

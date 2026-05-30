@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Infrastructure service for category CRUD operations. Ensures uniqueness, persistence,
+    /// and provides responses suitable for API consumption.
+    /// </summary>
     public class CategoryServices : ICategoryServices
     {
         private readonly AppDbContext _context;
@@ -21,6 +25,11 @@ namespace MyReadsApp.Infstructure.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Creates a new category after validating uniqueness of the category name.
+        /// </summary>
+        /// <param name="request">Create category request DTO.</param>
+        /// <returns>A Response containing the created category response.</returns>
         public async Task<Response<CategoryResponse>> CreateAsync(CreateCategoryRequest request)
         {
             if (string.IsNullOrWhiteSpace(request?.Name))
@@ -38,6 +47,10 @@ namespace MyReadsApp.Infstructure.Services
             return Response<CategoryResponse>.Success(resp);
         }
 
+        /// <summary>
+        /// Retrieves all categories, sorted alphabetically by name.
+        /// </summary>
+        /// <returns>A Response containing all category responses.</returns>
         public async Task<Response<IEnumerable<CategoryResponse>>> GetAllAsync()
         {
             var items = await _context.Categories.OrderBy(c => c.Name)
@@ -47,6 +60,12 @@ namespace MyReadsApp.Infstructure.Services
             return Response<IEnumerable<CategoryResponse>>.Success(items);
         }
 
+        /// <summary>
+        /// Updates an existing category with the provided name and icon.
+        /// </summary>
+        /// <param name="id">The unique identifier of the category to update.</param>
+        /// <param name="request">Update category request DTO.</param>
+        /// <returns>A Response containing the updated category response.</returns>
         public async Task<Response<CategoryResponse>> UpdateAsync(Guid id, UpdateCategoryRequest request)
         {
             var cat = await _context.Categories.FindAsync(id);

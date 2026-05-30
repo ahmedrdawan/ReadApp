@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MyReadsApp.API.Controllers
 {
+    /// <summary>
+    /// Handles post management endpoints including retrieving, creating, updating, and deleting posts.
+    /// </summary>
     [Authorize(Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
@@ -24,6 +27,14 @@ namespace MyReadsApp.API.Controllers
             _userAuthServices = userAuthServices;
         }
 
+        /// <summary>
+        /// Retrieves a paginated feed of posts.
+        /// </summary>
+        /// <param name="pageNumber">The page number for pagination (default: 1).</param>
+        /// <param name="pageSize">The number of posts per page (default: 10).</param>
+        /// <returns>
+        /// HTTP response containing paginated collection of posts.
+        /// </returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetPosts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
@@ -40,6 +51,13 @@ namespace MyReadsApp.API.Controllers
             return Ok(result.Value);
         }
 
+        /// <summary>
+        /// Retrieves a specific post by its identifier.
+        /// </summary>
+        /// <param name="PostId">The unique identifier of the post.</param>
+        /// <returns>
+        /// HTTP response containing post details or not found error.
+        /// </returns>
         [HttpGet("{PostId}")]
         public async Task<IActionResult> GetPost(Guid PostId)
         {
@@ -49,42 +67,55 @@ namespace MyReadsApp.API.Controllers
             return Ok(result.Value);
         }
 
+        /// <summary>
+        /// Creates a new post.
+        /// </summary>
+        /// <param name="request">Post creation data including book identifier.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of post creation.
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromBody] CreatedPostRequest request)
         {
-            var Post = new Post
-            {
-                Id = Guid.NewGuid(),
-                BookId = request.BookId,
-                UserId = _userAuthServices.GetCurrentUser(),
-                CreatedAt = DateTime.UtcNow,
-            };
+            // Map API DTO to Core DTO (include current user)
+            var coreRequest = new MyReadsApp.Core.DTOs.Post.Request.CreatePostRequest(request.BookId, _userAuthServices.GetCurrentUser());
 
-            var result = await _PostServices.CreateAsync(Post);
+            var result = await _PostServices.CreateAsync(coreRequest);
             if (!result.IsSuccess)
                 return BadRequest(result);
-            return 
-                CreatedAtAction(
-                    actionName: "GetPost",
-                    routeValues: new { PostId = Post.Id },
-                    value: result.Value);
+            return CreatedAtAction(
+                actionName: "GetPost",
+                routeValues: new { PostId = result.Value.Id },
+                value: result.Value);
         }
 
+        /// <summary>
+        /// Updates an existing post.
+        /// </summary>
+        /// <param name="PostId">The unique identifier of the post to update.</param>
+        /// <param name="request">Post update data.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of the update.
+        /// </returns>
         [HttpPut("{PostId}")]
         public async Task<IActionResult> UpdatePost(Guid PostId, UpdatePostRequest request)
         {
-            var NewPost = new Post
-            {
-                BookId = request.BookId,
-                UpdatedAt = DateTime.UtcNow,
-            };
+            // Map API DTO to Core DTO
+            var coreUpdate = new MyReadsApp.Core.DTOs.Post.Request.UpdatePostRequest(request.BookId);
 
-            var result = await _PostServices.UpdateAsync(PostId, NewPost);
+            var result = await _PostServices.UpdateAsync(PostId, coreUpdate);
             if (!result.IsSuccess)
                 return NotFound(result);
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a post by its identifier.
+        /// </summary>
+        /// <param name="PostId">The unique identifier of the post to delete.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of deletion.
+        /// </returns>
         [HttpDelete("{PostId}")]
         public async Task<IActionResult> DeletePost(Guid PostId)
         {

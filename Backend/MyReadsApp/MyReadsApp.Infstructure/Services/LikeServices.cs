@@ -10,6 +10,10 @@ using MyReadsApp.Infstructure.Services.Cache;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Infrastructure service for managing likes. Provides counting, adding, and removing likes,
+    /// interacts with the data context and caching layer.
+    /// </summary>
     public class LikeServices : ILikeServices
     {
         private readonly IGenericRepository<Like> _likeRepository;
@@ -23,6 +27,11 @@ namespace MyReadsApp.Infstructure.Services
             _cache = cache;
         }
 
+        /// <summary>
+        /// Counts the total number of likes for a specific post, using cache when available.
+        /// </summary>
+        /// <param name="postId">The unique identifier of the post.</param>
+        /// <returns>A Response containing the count of likes.</returns>
         public async Task<Response<int>> CountLikeAsync(Guid postId)
         {
             var cacheKey = GetCountCacheKey(postId);
@@ -43,6 +52,11 @@ namespace MyReadsApp.Infstructure.Services
             return Response<int>.Success(likes);
         }
 
+        /// <summary>
+        /// Creates a new like after validating the user hasn't already liked the post.
+        /// </summary>
+        /// <param name="like">The like entity to create.</param>
+        /// <returns>A Response containing the created like response.</returns>
         public async Task<Response<LikeResponse>> CreateAsync(Like like)
         {
             var likeExisting = await _context.Likes
@@ -55,6 +69,12 @@ namespace MyReadsApp.Infstructure.Services
             return Response<LikeResponse>.Success(BuildResponse(like));
         }
 
+        /// <summary>
+        /// Removes a like from a post by a specific user.
+        /// </summary>
+        /// <param name="postId">The unique identifier of the post.</param>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <returns>A Response containing the deleted like response.</returns>
         public async Task<Response<LikeResponse>> DeleteAsync(Guid postId, Guid userId)
         {
             var likeExisting = await _context.Likes

@@ -13,6 +13,10 @@ using MyReadsApp.Core.Services.Interfaces.Account;
 
 namespace MyReadsApp.Infstructure.Services
 {
+    /// <summary>
+    /// Provides recommendation-related services in infrastructure: generating, caching, and fetching
+    /// recommended items for users based on heuristics and persisted data.
+    /// </summary>
     public class RecommendtionServices : IRecommendionServices
     {
         private readonly IFriendshipServices _friendshipServices;
@@ -24,6 +28,11 @@ namespace MyReadsApp.Infstructure.Services
             _userAuthServices = userAuthServices;
         }
 
+        /// <summary>
+        /// Generates friend suggestions for the current user based on mutual connections using breadth-first search.
+        /// Suggests friends of friends up to 2 levels of connection depth, ranked by number of mutual friends.
+        /// </summary>
+        /// <returns>A Response containing a list of suggested friend responses ordered by mutual friend count.</returns>
         public async Task<Response<List<FriendResponse>>> FriendsSuggestionAsync()
         {
             var userId = _userAuthServices.GetCurrentUser();

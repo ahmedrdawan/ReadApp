@@ -6,9 +6,12 @@ using MyReadsApp.Core.Services.Interfaces;
 
 namespace MyReadsApp.API.Controllers
 {
+    /// <summary>
+    /// Handles user profile management endpoints including editing user information and managing avatars.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class UserController : ControllerBase
     {
         private readonly IUserServices _userServices;
@@ -18,6 +21,13 @@ namespace MyReadsApp.API.Controllers
             _userServices = userServices;
         }
 
+        /// <summary>
+        /// Updates user profile information.
+        /// </summary>
+        /// <param name="request">User profile update data.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of profile update.
+        /// </returns>
         [HttpPut("edit-information")]
         public async Task<IActionResult> EditInformationUser([FromBody] EditInformationUserRequest request)
         {
@@ -25,7 +35,12 @@ namespace MyReadsApp.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-
+        /// <summary>
+        /// Removes the user's avatar or profile image.
+        /// </summary>
+        /// <returns>
+        /// HTTP response indicating success or failure of avatar removal.
+        /// </returns>
         [HttpDelete("remove-avatar")]
         public async Task<IActionResult> RemoveAvatarOrImage()
         {
@@ -33,6 +48,13 @@ namespace MyReadsApp.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        /// <summary>
+        /// Uploads or updates the user's avatar or profile image.
+        /// </summary>
+        /// <param name="request">File storage request containing the image to upload.</param>
+        /// <returns>
+        /// HTTP response indicating success or failure of image upload.
+        /// </returns>
         [HttpPut("upload-avatar")]
         public async Task<IActionResult> UploadImageOrAvata([FromForm] FileStorageRequest request)
         {
